@@ -1,6 +1,11 @@
 from functools import lru_cache
+from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+BACKEND_DIR = Path(__file__).resolve().parents[2]
+PROJECT_ROOT = BACKEND_DIR.parent
 
 
 class Settings(BaseSettings):
@@ -15,12 +20,30 @@ class Settings(BaseSettings):
     debug: bool = True
     api_v1_prefix: str = "/api/v1"
 
+    postgres_user: str = "modelops_user"
+    postgres_password: str = "modelops_password"
+    postgres_db: str = "modelops_doctor"
+    postgres_host: str = "localhost"
+    postgres_port: int = 5432
+
+    redis_url: str = "redis://localhost:6379/0"
+    storage_path: str = "./storage"
+    mlflow_tracking_uri: str = "http://localhost:5000"
+
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=PROJECT_ROOT / ".env",
         env_file_encoding="utf-8",
         case_sensitive=False,
         extra="ignore",
     )
+
+    @property
+    def database_url(self) -> str:
+        return (
+            f"postgresql+asyncpg://{self.postgres_user}:"
+            f"{self.postgres_password}@{self.postgres_host}:"
+            f"{self.postgres_port}/{self.postgres_db}"
+        )
 
 
 @lru_cache
