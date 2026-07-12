@@ -1,7 +1,7 @@
 import asyncio
 from typing import Any
 
-from app.db.session import AsyncSessionLocal
+from app.db.session import AsyncSessionLocal, engine
 from app.repositories.automation_job import AutomationJobRepository
 from app.repositories.dataset import DatasetRepository
 from app.repositories.health_check import HealthCheckRepository
@@ -25,7 +25,16 @@ def run_health_check_task(
 ) -> dict[str, Any]:
     """Run one model-health check in a Celery worker."""
 
-    return asyncio.run(_run_health_check_job(job_id))
+    return asyncio.run(_run_health_check_job_with_cleanup(job_id))
+
+
+async def _run_health_check_job_with_cleanup(
+    job_id: int,
+) -> dict[str, Any]:
+    try:
+        return await _run_health_check_job(job_id)
+    finally:
+        await engine.dispose()
 
 
 async def _run_health_check_job(

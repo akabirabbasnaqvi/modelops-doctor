@@ -62,3 +62,9 @@ mlartifacts/
 build/
 dist/
 *.egg-info/
+
+# Celery Beat local schedule files
+celerybeat-schedule
+celerybeat-schedule.*
+backend/celerybeat-schedule
+backend/celerybeat-schedule.*
