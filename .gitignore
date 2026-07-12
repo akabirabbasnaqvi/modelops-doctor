@@ -68,3 +68,19 @@ celerybeat-schedule
 celerybeat-schedule.*
 backend/celerybeat-schedule
 backend/celerybeat-schedule.*
+
+
+# Coverage reports
+.coverage
+coverage.xml
+htmlcov/
+
+# Docker/local container data
+postgres_data/
+redis_data/
+
+# Celery Beat local schedule files
+celerybeat-schedule
+celerybeat-schedule.*
+backend/celerybeat-schedule
+backend/celerybeat-schedule.*

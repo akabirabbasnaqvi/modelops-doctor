@@ -20,6 +20,9 @@ class Settings(BaseSettings):
     debug: bool = True
     api_v1_prefix: str = "/api/v1"
 
+    cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
+    log_level: str = "INFO"
+
     postgres_user: str = "modelops_user"
     postgres_password: str = "modelops_password"
     postgres_db: str = "modelops_doctor"
@@ -48,6 +51,12 @@ class Settings(BaseSettings):
             f"{self.postgres_password}@{self.postgres_host}:"
             f"{self.postgres_port}/{self.postgres_db}"
         )
+
+    @property
+    def cors_origin_list(self) -> list[str]:
+        return [
+            origin.strip() for origin in self.cors_origins.split(",") if origin.strip()
+        ]
 
 
 @lru_cache
