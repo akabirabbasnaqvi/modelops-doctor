@@ -12,11 +12,10 @@ RUN apt-get update \
         netcat-openbsd \
     && rm -rf /var/lib/apt/lists/*
 
-COPY backend/requirements.txt /app/backend/requirements.txt
+COPY backend/requirements.docker.txt /app/backend/requirements.docker.txt
 
 RUN python -m pip install --upgrade pip \
-    && python -m pip install \
-        -r /app/backend/requirements.txt
+    && python -m pip install -r /app/backend/requirements.docker.txt
 
 COPY backend /app/backend
 COPY ml_examples /app/ml_examples
@@ -30,13 +29,4 @@ EXPOSE 8000
 
 ENTRYPOINT ["/app/backend/docker-entrypoint.sh"]
 
-CMD [
-    "python",
-    "-m",
-    "uvicorn",
-    "app.main:app",
-    "--host",
-    "0.0.0.0",
-    "--port",
-    "8000"
-]
+CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
