@@ -14,6 +14,8 @@ from app.models import (  # noqa: F401
     Dataset,
     DatasetProfile,
     ModelVersion,
+    Prediction,
+    PredictionBatch,
     Project,
 )
 

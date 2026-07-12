@@ -10,6 +10,12 @@ from app.schemas.model_version import (
     ModelVersionListResponse,
     ModelVersionResponse,
 )
+from app.schemas.prediction import (
+    PredictionBatchDetailResponse,
+    PredictionBatchListResponse,
+    PredictionBatchResponse,
+    PredictionResponse,
+)
 from app.schemas.project import (
     ProjectCreate,
     ProjectListResponse,
@@ -25,6 +31,10 @@ __all__ = [
     "ModelVersionCreate",
     "ModelVersionListResponse",
     "ModelVersionResponse",
+    "PredictionBatchDetailResponse",
+    "PredictionBatchListResponse",
+    "PredictionBatchResponse",
+    "PredictionResponse",
     "ProjectCreate",
     "ProjectListResponse",
     "ProjectResponse",

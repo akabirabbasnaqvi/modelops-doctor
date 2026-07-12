@@ -1,0 +1,11 @@
+timestamp,age,monthly_charges,tenure_months,contract_type,support_calls,true_label,predicted_label,confidence
+2026-07-01T09:00:00Z,25,48.50,4,Month-to-month,4,1,1,0.91
+2026-07-01T10:00:00Z,43,78.20,25,One year,1,0,0,0.88
+2026-07-01T11:00:00Z,37,67.40,13,Month-to-month,3,1,1,0.82
+2026-07-01T12:00:00Z,59,91.25,50,Two year,0,0,0,0.95
+2026-07-01T13:00:00Z,30,58.10,7,Month-to-month,5,1,1,0.79
+2026-07-01T14:00:00Z,48,74.90,38,One year,1,0,0,0.87
+2026-07-01T15:00:00Z,34,63.80,11,Month-to-month,2,1,0,0.56
+2026-07-01T16:00:00Z,52,86.15,44,Two year,0,0,0,0.93
+2026-07-01T17:00:00Z,28,52.20,5,Month-to-month,4,1,1,0.84
+2026-07-01T18:00:00Z,45,77.60,32,One year,1,0,0,0.89

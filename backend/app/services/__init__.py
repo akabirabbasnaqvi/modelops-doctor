@@ -11,6 +11,15 @@ from app.services.model_version import (
     ModelVersionService,
     ParentProjectNotFoundError,
 )
+from app.services.prediction import (
+    InvalidPredictionLogError,
+    ModelProjectMismatchError,
+    PredictionBatchAlreadyExistsError,
+    PredictionBatchNotFoundError,
+    PredictionModelNotFoundError,
+    PredictionProjectNotFoundError,
+    PredictionService,
+)
 from app.services.project import (
     ProjectAlreadyExistsError,
     ProjectNotFoundError,
@@ -23,10 +32,17 @@ __all__ = [
     "DatasetProjectNotFoundError",
     "DatasetService",
     "InvalidDatasetError",
+    "InvalidPredictionLogError",
+    "ModelProjectMismatchError",
     "ModelVersionAlreadyExistsError",
     "ModelVersionNotFoundError",
     "ModelVersionService",
     "ParentProjectNotFoundError",
+    "PredictionBatchAlreadyExistsError",
+    "PredictionBatchNotFoundError",
+    "PredictionModelNotFoundError",
+    "PredictionProjectNotFoundError",
+    "PredictionService",
     "ProjectAlreadyExistsError",
     "ProjectNotFoundError",
     "ProjectService",
