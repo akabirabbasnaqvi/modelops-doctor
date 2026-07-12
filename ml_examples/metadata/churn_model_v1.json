@@ -1,0 +1,29 @@
+{
+  "name": "Customer Churn Classifier",
+  "version": "1.0.0",
+  "algorithm": "Random Forest",
+  "framework": "scikit-learn",
+  "target_column": "churn",
+  "positive_class": "1",
+  "metrics": {
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "roc_auc": 1.0
+  },
+  "artifact_uri": "ml_examples/artifacts/churn_model_v1.joblib",
+  "training_date": "2026-07-12T20:17:39.190930+00:00",
+  "training_rows": 7,
+  "testing_rows": 3,
+  "numeric_features": [
+    "age",
+    "monthly_charges",
+    "tenure_months",
+    "support_calls"
+  ],
+  "categorical_features": [
+    "contract_type"
+  ],
+  "mlflow_run_id": "612edbd3f47b471b90f3b0d3c7275883"
+}

@@ -84,3 +84,15 @@ celerybeat-schedule
 celerybeat-schedule.*
 backend/celerybeat-schedule
 backend/celerybeat-schedule.*
+
+# MLflow local tracking data
+mlruns/
+mlartifacts/
+
+# Generated ML model artifacts
+ml_examples/artifacts/*
+!ml_examples/artifacts/.gitkeep
+
+# Generated prediction logs
+ml_examples/generated_prediction_logs/*
+!ml_examples/generated_prediction_logs/.gitkeep
