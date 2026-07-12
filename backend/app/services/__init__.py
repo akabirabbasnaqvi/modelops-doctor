@@ -25,6 +25,13 @@ from app.services.project import (
     ProjectNotFoundError,
     ProjectService,
 )
+from app.services.health_check import (
+    HealthCheckRelationshipError,
+    HealthCheckResourceNotFoundError,
+    HealthCheckService,
+    InvalidHealthCheckDataError,
+)
+
 
 __all__ = [
     "DatasetAlreadyExistsError",
@@ -46,4 +53,8 @@ __all__ = [
     "ProjectAlreadyExistsError",
     "ProjectNotFoundError",
     "ProjectService",
+    "HealthCheckRelationshipError",
+    "HealthCheckResourceNotFoundError",
+    "HealthCheckService",
+    "InvalidHealthCheckDataError",
 ]

@@ -1,3 +1,9 @@
+from app.schemas.health_check import (
+    DiagnosisReportResponse,
+    HealthCheckResponse,
+    HealthCheckRunRequest,
+    HealthCheckRunResponse,
+)
 from app.schemas.dataset import (
     DatasetListResponse,
     DatasetProfileResponse,
@@ -38,4 +44,8 @@ __all__ = [
     "ProjectCreate",
     "ProjectListResponse",
     "ProjectResponse",
+    "DiagnosisReportResponse",
+    "HealthCheckResponse",
+    "HealthCheckRunRequest",
+    "HealthCheckRunResponse",
 ]
