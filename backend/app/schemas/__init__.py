@@ -1,3 +1,10 @@
+from app.schemas.dataset import (
+    DatasetListResponse,
+    DatasetProfileResponse,
+    DatasetResponse,
+    DatasetType,
+    DatasetUploadResponse,
+)
 from app.schemas.model_version import (
     ModelVersionCreate,
     ModelVersionListResponse,
@@ -10,6 +17,11 @@ from app.schemas.project import (
 )
 
 __all__ = [
+    "DatasetListResponse",
+    "DatasetProfileResponse",
+    "DatasetResponse",
+    "DatasetType",
+    "DatasetUploadResponse",
     "ModelVersionCreate",
     "ModelVersionListResponse",
     "ModelVersionResponse",

@@ -1,0 +1,11 @@
+age,monthly_charges,tenure_months,contract_type,support_calls,churn
+24,45.50,3,Month-to-month,4,1
+42,79.90,24,One year,1,0
+36,65.25,12,Month-to-month,3,1
+58,89.10,48,Two year,0,0
+29,55.75,6,Month-to-month,5,1
+47,72.30,36,One year,1,0
+33,61.20,10,Month-to-month,2,1
+51,84.65,42,Two year,0,0
+27,49.80,4,Month-to-month,4,1
+44,76.40,30,One year,1,0

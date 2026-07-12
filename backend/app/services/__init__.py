@@ -1,3 +1,10 @@
+from app.services.dataset import (
+    DatasetAlreadyExistsError,
+    DatasetNotFoundError,
+    DatasetProjectNotFoundError,
+    DatasetService,
+    InvalidDatasetError,
+)
 from app.services.model_version import (
     ModelVersionAlreadyExistsError,
     ModelVersionNotFoundError,
@@ -11,6 +18,11 @@ from app.services.project import (
 )
 
 __all__ = [
+    "DatasetAlreadyExistsError",
+    "DatasetNotFoundError",
+    "DatasetProjectNotFoundError",
+    "DatasetService",
+    "InvalidDatasetError",
     "ModelVersionAlreadyExistsError",
     "ModelVersionNotFoundError",
     "ModelVersionService",
