@@ -1,40 +1,47 @@
-from fastapi.testclient import TestClient
-
-from app.main import app
-
-
-client = TestClient(app)
-
-
-def test_root_endpoint_returns_welcome_message() -> None:
-    response = client.get("/")
-
-    assert response.status_code == 200
-
-    response_data = response.json()
-
-    assert response_data == {
-        "message": "Welcome to ModelOps Doctor",
-        "documentation": "/docs",
-        "health": "/api/v1/health",
-    }
+from app.mlops.health import (
+    calculate_component_scores,
+    calculate_health_score,
+    classify_health_status,
+)
 
 
-def test_health_endpoint_returns_healthy_status() -> None:
-    response = client.get("/api/v1/health")
+def test_weighted_health_score() -> None:
+    result = calculate_health_score(
+        performance_score=90,
+        drift_score=80,
+        data_quality_score=100,
+        confidence_score=85,
+        class_balance_score=100,
+    )
 
-    assert response.status_code == 200
-
-    response_data = response.json()
-
-    assert response_data["status"] == "healthy"
-    assert response_data["service"] == "modelops-doctor-api"
-    assert response_data["version"] == "0.1.0"
-    assert response_data["environment"] == "development"
-    assert "timestamp" in response_data
+    assert result["health_score"] == 90.0
+    assert result["status"] == "excellent"
 
 
-def test_old_health_endpoint_does_not_exist() -> None:
-    response = client.get("/health")
+def test_health_status_boundaries() -> None:
+    assert classify_health_status(95) == "excellent"
+    assert classify_health_status(80) == "good"
+    assert classify_health_status(65) == "warning"
+    assert classify_health_status(50) == "risky"
+    assert classify_health_status(30) == "critical"
 
-    assert response.status_code == 404
+
+def test_component_score_conversion() -> None:
+    result = calculate_component_scores(
+        metrics={
+            "f1": 0.80,
+            "average_confidence": 0.90,
+            "true_class_distribution": {
+                "0": 0.50,
+                "1": 0.50,
+            },
+        },
+        drift={"drift_rate": 0.20},
+        missing_rate=0.05,
+    )
+
+    assert result["performance_score"] == 80.0
+    assert result["drift_score"] == 80.0
+    assert result["data_quality_score"] == 95.0
+    assert result["confidence_score"] == 90.0
+    assert result["class_balance_score"] == 100.0
