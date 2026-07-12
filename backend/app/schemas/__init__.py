@@ -1,3 +1,8 @@
+from app.schemas.model_version import (
+    ModelVersionCreate,
+    ModelVersionListResponse,
+    ModelVersionResponse,
+)
 from app.schemas.project import (
     ProjectCreate,
     ProjectListResponse,
@@ -5,6 +10,9 @@ from app.schemas.project import (
 )
 
 __all__ = [
+    "ModelVersionCreate",
+    "ModelVersionListResponse",
+    "ModelVersionResponse",
     "ProjectCreate",
     "ProjectListResponse",
     "ProjectResponse",
