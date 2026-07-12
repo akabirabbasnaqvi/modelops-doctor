@@ -100,3 +100,6 @@ ml_examples/generated_prediction_logs/*
 
 # Local DVC remote storage
 dvc-storage/
+
+# Node dependencies in any directory
+node_modules/
