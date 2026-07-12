@@ -1,0 +1,5 @@
+outs:
+- md5: c2003e89dc857fd9a796fe9fd229ea4b
+  size: 354
+  hash: md5
+  path: sample_churn_training.csv

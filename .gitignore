@@ -96,3 +96,7 @@ ml_examples/artifacts/*
 # Generated prediction logs
 ml_examples/generated_prediction_logs/*
 !ml_examples/generated_prediction_logs/.gitkeep
+
+
+# Local DVC remote storage
+dvc-storage/
