@@ -11,6 +11,7 @@ from app.db.base import Base
 
 
 from app.models import (  # noqa: F401
+    AutomationJob,
     Dataset,
     DatasetProfile,
     DiagnosisReport,

@@ -27,6 +27,10 @@ class Settings(BaseSettings):
     postgres_port: int = 5432
 
     redis_url: str = "redis://localhost:6379/0"
+    celery_broker_url: str = "redis://localhost:6379/0"
+    celery_result_backend: str = "redis://localhost:6379/1"
+    celery_task_always_eager: bool = False
+
     storage_path: str = "./storage"
     mlflow_tracking_uri: str = "http://localhost:5000"
 
