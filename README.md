@@ -562,9 +562,6 @@ Recommended README gallery:
 ## Author
 
 **Akabir Abbas**
-
+AI and ML Engineer
 BS Computer Science graduate specializing in artificial intelligence, machine learning, backend engineering, and MLOps.
 
-## License
-
-Add a license before public distribution. The MIT License is a suitable option for an open-source portfolio project.
