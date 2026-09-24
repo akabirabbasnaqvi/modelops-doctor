@@ -90,7 +90,7 @@ jobs:
 
       - name: Run tests with coverage
         run: |
-          python -m pytest
+          python -m pytest --cov=app --cov-report=term-missing --cov-fail-under=70
 
   docker-build:
     runs-on: ubuntu-latest
