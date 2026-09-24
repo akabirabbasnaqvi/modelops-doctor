@@ -231,15 +231,38 @@ docker compose down -v
 
 ## Local Development
 
+Python 3.11 or newer and Node.js 20 or newer are required.
+
 ### 1. Create and activate the Python environment
+
+Linux and macOS:
+
+```bash
+python3.11 -m venv backend/.venv
+source backend/.venv/bin/activate
+python -m pip install -r backend/requirements-dev.txt
+```
+
+Windows (PowerShell):
 
 ```powershell
 py -3.11 -m venv backend\.venv
 backend\.venv\Scripts\Activate.ps1
-python -m pip install -r backend\requirements.txt
+python -m pip install -r backend\requirements-dev.txt
 ```
 
+`requirements-dev.txt` installs the application plus the test and lint
+tooling. For a runtime-only install, use `requirements.txt` instead.
+
 ### 2. Configure environment variables
+
+Linux and macOS:
+
+```bash
+cp .env.example .env
+```
+
+Windows (PowerShell):
 
 ```powershell
 Copy-Item .env.example .env
@@ -471,22 +494,35 @@ The included DVC remote is local and intended for demonstration. Configure cloud
 
 ## Quality Checks
 
+These are the exact commands CI runs. They should pass on a fresh clone
+after the Local Development setup above.
+
 ### Backend
 
-```powershell
+```bash
 cd backend
-python -m ruff check app tests alembic\env.py
-python -m ruff format --check app tests alembic\env.py
+python -m ruff check app tests alembic/env.py
+python -m ruff format --check app tests alembic/env.py
 python -m pytest
 python -m alembic current
 ```
 
+`python -m pytest` runs the full backend suite with coverage and fails if
+coverage drops below the threshold configured in `backend/pytest.ini`.
+
+On Windows, replace `alembic/env.py` with `alembic\env.py`.
+
 ### Frontend
 
-```powershell
+```bash
 cd frontend
+npm ci
+npm run lint
 npm run build
 ```
+
+`npm ci` installs the exact versions from `frontend/package-lock.json`.
+Use it instead of `npm install` so the install is reproducible.
 
 ### Docker
 

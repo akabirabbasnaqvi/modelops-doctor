@@ -9,7 +9,16 @@
 
 ## Create the Virtual Environment
 
-From the project root:
+From the project root.
+
+Linux and macOS:
+
+```bash
+python3.11 -m venv backend/.venv
+source backend/.venv/bin/activate
+```
+
+Windows (PowerShell):
 
 ```powershell
 py -3.11 -m venv backend\.venv
@@ -18,9 +27,20 @@ backend\.venv\Scripts\Activate.ps1
 
 ## Install Dependencies
 
-```powershell
-python -m pip install -r backend\requirements.txt
+Linux and macOS:
+
+```bash
+python -m pip install -r backend/requirements-dev.txt
 ```
+
+Windows (PowerShell):
+
+```powershell
+python -m pip install -r backend\requirements-dev.txt
+```
+
+`requirements.txt` holds the runtime dependencies. `requirements-dev.txt`
+adds pytest, pytest-cov, httpx, and Ruff, and is what CI installs.
 
 ## Configure Environment Variables
 
