@@ -144,7 +144,7 @@ class PredictionService:
                 "for the selected model version."
             )
 
-        is_labeled = (
+        is_labeled = bool(
             "true_label" in dataframe.columns and dataframe["true_label"].notna().any()
         )
 
