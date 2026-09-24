@@ -1,0 +1,59 @@
+# Normalize line endings across platforms.
+#
+# Without this, files edited on Windows are committed with CRLF while the
+# repository history uses LF, which makes every file appear modified and
+# turns ordinary commits into repo-wide diffs.
+#
+# `text=auto` lets Git decide what is text, and `eol=lf` forces LF both in
+# the index and in the working tree on every platform.
+* text=auto eol=lf
+
+# Scripts that must keep platform-native endings to be executable.
+*.sh    text eol=lf
+*.bash  text eol=lf
+*.bat   text eol=crlf
+*.cmd   text eol=crlf
+*.ps1   text eol=crlf
+
+# Explicit text classification for the file types in this repository.
+*.py    text eol=lf
+*.ts    text eol=lf
+*.tsx   text eol=lf
+*.js    text eol=lf
+*.jsx   text eol=lf
+*.json  text eol=lf
+*.css   text eol=lf
+*.html  text eol=lf
+*.md    text eol=lf
+*.yml   text eol=lf
+*.yaml  text eol=lf
+*.toml  text eol=lf
+*.ini   text eol=lf
+*.cfg   text eol=lf
+*.txt   text eol=lf
+*.csv   text eol=lf
+*.dvc   text eol=lf
+*.conf  text eol=lf
+*.sql   text eol=lf
+Dockerfile      text eol=lf
+.dockerignore   text eol=lf
+.gitignore      text eol=lf
+.env.example    text eol=lf
+
+# Binary files: never convert, never diff as text.
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.gif    binary
+*.ico    binary
+*.webp   binary
+*.pdf    binary
+*.zip    binary
+*.gz     binary
+*.pkl    binary
+*.joblib binary
+*.parquet binary
+*.woff   binary
+*.woff2  binary
+*.ttf    binary
+*.eot    binary
