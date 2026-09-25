@@ -1,20 +1,10 @@
-import {
-  type FormEvent,
-  useEffect,
-  useState,
-} from "react";
+import { type FormEvent, useEffect, useState } from "react";
 
 import { getErrorMessage } from "../api/errors";
 import { useFormState } from "../hooks/useFormState";
-import {
-  getModels,
-  registerModel,
-} from "../api/models";
+import { getModels, registerModel } from "../api/models";
 
-import type {
-  ModelVersion,
-  ModelVersionCreateRequest,
-} from "../api/models";
+import type { ModelVersion, ModelVersionCreateRequest } from "../api/models";
 
 const PROJECT_ID = 1;
 
@@ -56,10 +46,7 @@ export default function ModelsPage() {
       setModels(response.models);
     } catch (requestError) {
       setError(
-        getErrorMessage(
-          requestError,
-          "Model versions could not be loaded."
-        )
+        getErrorMessage(requestError, "Model versions could not be loaded."),
       );
     } finally {
       setLoading(false);
@@ -70,10 +57,7 @@ export default function ModelsPage() {
     void loadModels();
   }, []);
 
-  function updateMetric(
-    metric: string,
-    value: string
-  ) {
+  function updateMetric(metric: string, value: string) {
     setFormData((current) => ({
       ...current,
       metrics: {
@@ -83,24 +67,16 @@ export default function ModelsPage() {
     }));
   }
 
-  async function handleSubmit(
-    event: FormEvent<HTMLFormElement>
-  ) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     try {
       setError(null);
       setSuccess(null);
 
-      const createdModel = await registerModel(
-        PROJECT_ID,
-        formData
-      );
+      const createdModel = await registerModel(PROJECT_ID, formData);
 
-      setModels((current) => [
-        createdModel,
-        ...current,
-      ]);
+      setModels((current) => [createdModel, ...current]);
 
       resetForm();
       setSuccess("Model version registered successfully.");
@@ -108,8 +84,8 @@ export default function ModelsPage() {
       setError(
         getErrorMessage(
           requestError,
-          "The model version could not be registered."
-        )
+          "The model version could not be registered.",
+        ),
       );
     }
   }
@@ -118,32 +94,22 @@ export default function ModelsPage() {
     <div>
       <header className="page-header">
         <h1>Model Registry</h1>
-        <p>
-          Register, compare, and monitor machine-learning
-          model versions.
-        </p>
+        <p>Register, compare, and monitor machine-learning model versions.</p>
       </header>
 
       {error && <div className="alert error">{error}</div>}
-      {success && (
-        <div className="alert success">{success}</div>
-      )}
+      {success && <div className="alert success">{success}</div>}
 
       <section className="panel">
         <h2>Register Model Version</h2>
 
-        <form
-          className="form-grid"
-          onSubmit={handleSubmit}
-        >
+        <form className="form-grid" onSubmit={handleSubmit}>
           <label>
             Model Name
             <input
               required
               value={formData.name}
-              onChange={(event) =>
-                updateField("name", event.target.value)
-              }
+              onChange={(event) => updateField("name", event.target.value)}
             />
           </label>
 
@@ -152,9 +118,7 @@ export default function ModelsPage() {
             <input
               required
               value={formData.version}
-              onChange={(event) =>
-                updateField("version", event.target.value)
-              }
+              onChange={(event) => updateField("version", event.target.value)}
             />
           </label>
 
@@ -163,9 +127,7 @@ export default function ModelsPage() {
             <input
               required
               value={formData.algorithm}
-              onChange={(event) =>
-                updateField("algorithm", event.target.value)
-              }
+              onChange={(event) => updateField("algorithm", event.target.value)}
             />
           </label>
 
@@ -174,39 +136,30 @@ export default function ModelsPage() {
             <input
               required
               value={formData.framework}
-              onChange={(event) =>
-                updateField("framework", event.target.value)
-              }
+              onChange={(event) => updateField("framework", event.target.value)}
             />
           </label>
 
-          {["accuracy", "precision", "recall", "f1"].map(
-            (metric) => (
-              <label key={metric}>
-                {metric.toUpperCase()}
-                <input
-                  type="number"
-                  min="0"
-                  max="1"
-                  step="0.01"
-                  value={formData.metrics[metric] ?? 0}
-                  onChange={(event) =>
-                    updateMetric(metric, event.target.value)
-                  }
-                />
-              </label>
-            )
-          )}
+          {["accuracy", "precision", "recall", "f1"].map((metric) => (
+            <label key={metric}>
+              {metric.toUpperCase()}
+              <input
+                type="number"
+                min="0"
+                max="1"
+                step="0.01"
+                value={formData.metrics[metric] ?? 0}
+                onChange={(event) => updateMetric(metric, event.target.value)}
+              />
+            </label>
+          ))}
 
           <label className="full-width">
             Artifact URI
             <input
               value={formData.artifact_uri ?? ""}
               onChange={(event) =>
-                updateField(
-                  "artifact_uri",
-                  event.target.value || null
-                )
+                updateField("artifact_uri", event.target.value || null)
               }
               placeholder="artifacts/model.joblib"
             />
@@ -246,9 +199,7 @@ export default function ModelsPage() {
                     <td>{model.version}</td>
                     <td>{model.algorithm}</td>
                     <td>{model.framework}</td>
-                    <td>
-                      {model.metrics.f1?.toFixed(3) ?? "N/A"}
-                    </td>
+                    <td>{model.metrics.f1?.toFixed(3) ?? "N/A"}</td>
                     <td>
                       <span className="status-badge completed">
                         {model.status}

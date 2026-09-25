@@ -64,8 +64,9 @@ describe("ModelsPage", () => {
 
       render(<ModelsPage />);
 
-      const row = (await screen.findByText("Customer Churn Classifier"))
-        .closest("tr") as HTMLElement;
+      const row = (
+        await screen.findByText("Customer Churn Classifier")
+      ).closest("tr") as HTMLElement;
 
       expect(within(row).getByText("1.0.0")).toBeInTheDocument();
       expect(within(row).getByText("Random Forest")).toBeInTheDocument();

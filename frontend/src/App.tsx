@@ -1,8 +1,4 @@
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import AppLayout from "./layouts/AppLayout";
 
@@ -18,43 +14,20 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route
-          element={<AppLayout />}
-        >
-          <Route
-            path="/"
-            element={<DashboardPage />}
-          />
+        <Route element={<AppLayout />}>
+          <Route path="/" element={<DashboardPage />} />
 
-          <Route
-            path="/projects"
-            element={<ProjectsPage />}
-          />
+          <Route path="/projects" element={<ProjectsPage />} />
 
-          <Route
-            path="/models"
-            element={<ModelsPage />}
-          />
+          <Route path="/models" element={<ModelsPage />} />
 
-          <Route
-            path="/datasets"
-            element={<DatasetsPage />}
-          />
+          <Route path="/datasets" element={<DatasetsPage />} />
 
-          <Route
-            path="/predictions"
-            element={<PredictionBatchesPage />}
-          />
+          <Route path="/predictions" element={<PredictionBatchesPage />} />
 
-          <Route
-            path="/health"
-            element={<HealthChecksPage />}
-          />
+          <Route path="/health" element={<HealthChecksPage />} />
 
-          <Route
-            path="/jobs"
-            element={<JobsPage />}
-          />
+          <Route path="/jobs" element={<JobsPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

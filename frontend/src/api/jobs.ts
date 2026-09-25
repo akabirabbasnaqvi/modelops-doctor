@@ -37,16 +37,14 @@ export async function getJobs() {
   return response.data;
 }
 
-export async function queueHealthCheck(
-  projectId: number
-) {
+export async function queueHealthCheck(projectId: number) {
   const response = await api.post(
     `/projects/${projectId}/health-checks/background`,
     {
       model_version_id: 1,
       baseline_dataset_id: 1,
       prediction_batch_id: 1,
-    }
+    },
   );
 
   return response.data;

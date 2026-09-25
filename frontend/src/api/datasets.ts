@@ -20,10 +20,10 @@ export type DatasetListResponse = {
 };
 
 export async function getDatasets(
-  projectId: number
+  projectId: number,
 ): Promise<DatasetListResponse> {
   const response = await api.get<DatasetListResponse>(
-    `/projects/${projectId}/datasets`
+    `/projects/${projectId}/datasets`,
   );
 
   return response.data;
@@ -33,7 +33,7 @@ export async function uploadDataset(
   projectId: number,
   datasetType: string,
   version: string,
-  file: File
+  file: File,
 ) {
   const formData = new FormData();
 
@@ -41,20 +41,13 @@ export async function uploadDataset(
   formData.append("version", version);
   formData.append("file", file);
 
-  const response = await api.post(
-    `/projects/${projectId}/datasets`,
-    formData
-  );
+  const response = await api.post(`/projects/${projectId}/datasets`, formData);
 
   return response.data;
 }
 
-export async function getDatasetProfile(
-  datasetId: number
-) {
-  const response = await api.get(
-    `/datasets/${datasetId}/profile`
-  );
+export async function getDatasetProfile(datasetId: number) {
+  const response = await api.get(`/datasets/${datasetId}/profile`);
 
   return response.data;
 }

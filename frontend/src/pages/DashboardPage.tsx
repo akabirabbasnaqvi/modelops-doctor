@@ -44,7 +44,7 @@ export default function DashboardPage() {
       })
       .catch(() => {
         setError(
-          "The dashboard could not be loaded. Confirm that the FastAPI backend is running."
+          "The dashboard could not be loaded. Confirm that the FastAPI backend is running.",
         );
       });
   }, []);
@@ -70,8 +70,8 @@ export default function DashboardPage() {
         <h1>{data.project_name}</h1>
 
         <p>
-          Monitor registered models, datasets, prediction batches,
-          automated jobs, and model health.
+          Monitor registered models, datasets, prediction batches, automated
+          jobs, and model health.
         </p>
       </header>
 
@@ -85,10 +85,7 @@ export default function DashboardPage() {
           value={data.counts.prediction_batches}
         />
 
-        <StatCard
-          title="Health Checks"
-          value={data.counts.health_checks}
-        />
+        <StatCard title="Health Checks" value={data.counts.health_checks} />
       </div>
 
       <div className="panel health-summary">
@@ -125,15 +122,10 @@ export default function DashboardPage() {
         <h2>Drifted Features</h2>
 
         <p>
-          Features whose current distributions differ from the
-          training dataset.
+          Features whose current distributions differ from the training dataset.
         </p>
 
-        <DriftChart
-          driftedFeatures={
-            latestHealth?.drifted_features ?? []
-          }
-        />
+        <DriftChart driftedFeatures={latestHealth?.drifted_features ?? []} />
       </section>
     </div>
   );

@@ -3,10 +3,7 @@ type Props = {
   value: string | number;
 };
 
-export default function StatCard({
-  title,
-  value,
-}: Props) {
+export default function StatCard({ title, value }: Props) {
   return (
     <div className="dashboard-card">
       <h4>{title}</h4>

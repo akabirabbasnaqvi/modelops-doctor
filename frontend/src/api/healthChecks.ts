@@ -67,35 +67,32 @@ export async function runHealthCheck(
   projectId: number,
   modelVersionId: number,
   baselineDatasetId: number,
-  predictionBatchId: number
+  predictionBatchId: number,
 ) {
-  const response = await api.post(
-    `/projects/${projectId}/health-checks/run`,
-    {
-      model_version_id: modelVersionId,
-      baseline_dataset_id: baselineDatasetId,
-      prediction_batch_id: predictionBatchId,
-    }
-  );
+  const response = await api.post(`/projects/${projectId}/health-checks/run`, {
+    model_version_id: modelVersionId,
+    baseline_dataset_id: baselineDatasetId,
+    prediction_batch_id: predictionBatchId,
+  });
 
   return response.data;
 }
 
 export async function getLatestHealthCheck(
-  projectId: number
+  projectId: number,
 ): Promise<HealthCheck> {
   const response = await api.get<HealthCheck>(
-    `/projects/${projectId}/health-checks/latest`
+    `/projects/${projectId}/health-checks/latest`,
   );
 
   return response.data;
 }
 
 export async function getDiagnosisReport(
-  healthCheckId: number
+  healthCheckId: number,
 ): Promise<DiagnosisReport> {
   const response = await api.get<DiagnosisReport>(
-    `/health-checks/${healthCheckId}/report`
+    `/health-checks/${healthCheckId}/report`,
   );
 
   return response.data;

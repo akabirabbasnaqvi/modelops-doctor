@@ -17,9 +17,7 @@ vi.mock("../../api/predictions", () => ({
 const mockedGetBatches = vi.mocked(getPredictionBatches);
 const mockedUploadBatch = vi.mocked(uploadPredictionBatch);
 
-function makeBatch(
-  overrides: Partial<PredictionBatch> = {},
-): PredictionBatch {
+function makeBatch(overrides: Partial<PredictionBatch> = {}): PredictionBatch {
   return {
     id: 4,
     project_id: 1,
@@ -63,9 +61,9 @@ describe("PredictionBatchesPage", () => {
 
       render(<PredictionBatchesPage />);
 
-      const row = (
-        await screen.findByText("churn_predictions_v1.csv")
-      ).closest("tr") as HTMLElement;
+      const row = (await screen.findByText("churn_predictions_v1.csv")).closest(
+        "tr",
+      ) as HTMLElement;
 
       expect(within(row).getByText("500")).toBeInTheDocument();
       expect(within(row).getByText("Yes")).toBeInTheDocument();
@@ -129,11 +127,7 @@ describe("PredictionBatchesPage", () => {
       );
 
       await waitFor(() => {
-        expect(mockedUploadBatch).toHaveBeenCalledWith(
-          1,
-          7,
-          expect.any(File),
-        );
+        expect(mockedUploadBatch).toHaveBeenCalledWith(1, 7, expect.any(File));
       });
     });
 

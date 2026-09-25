@@ -12,23 +12,16 @@ export async function getProjects(): Promise<ProjectListResponse> {
   return response.data;
 }
 
-export async function getProject(
-  projectId: number
-): Promise<Project> {
-  const response = await api.get<Project>(
-    `/projects/${projectId}`
-  );
+export async function getProject(projectId: number): Promise<Project> {
+  const response = await api.get<Project>(`/projects/${projectId}`);
 
   return response.data;
 }
 
 export async function createProject(
-  projectData: ProjectCreateRequest
+  projectData: ProjectCreateRequest,
 ): Promise<Project> {
-  const response = await api.post<Project>(
-    "/projects",
-    projectData
-  );
+  const response = await api.post<Project>("/projects", projectData);
 
   return response.data;
 }

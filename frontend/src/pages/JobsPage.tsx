@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { getErrorMessage } from "../api/errors";
-import {
-  getJobs,
-  queueHealthCheck,
-} from "../api/jobs";
+import { getJobs, queueHealthCheck } from "../api/jobs";
 
 import type { AutomationJob } from "../api/jobs";
 
@@ -45,8 +42,8 @@ export default function JobsPage() {
       setError(
         getErrorMessage(
           requestError,
-          "The background task could not be queued."
-        )
+          "The background task could not be queued.",
+        ),
       );
     } finally {
       setQueuing(false);
@@ -58,9 +55,7 @@ export default function JobsPage() {
       <header className="page-header action-header">
         <div>
           <h1>Automation Jobs</h1>
-          <p>
-            Monitor queued and completed Celery background tasks.
-          </p>
+          <p>Monitor queued and completed Celery background tasks.</p>
         </div>
 
         <button
@@ -68,9 +63,7 @@ export default function JobsPage() {
           onClick={handleQueueJob}
           disabled={queuing}
         >
-          {queuing
-            ? "Queuing..."
-            : "Queue Health Check"}
+          {queuing ? "Queuing..." : "Queue Health Check"}
         </button>
       </header>
 
@@ -96,21 +89,13 @@ export default function JobsPage() {
                   <td>{job.id}</td>
                   <td>{job.job_type}</td>
                   <td>
-                    <span
-                      className={`status-badge ${job.status}`}
-                    >
+                    <span className={`status-badge ${job.status}`}>
                       {job.status}
                     </span>
                   </td>
-                  <td>
-                    {job.result.health_score ?? "N/A"}
-                  </td>
+                  <td>{job.result.health_score ?? "N/A"}</td>
                   <td>{job.error_message ?? "—"}</td>
-                  <td>
-                    {new Date(
-                      job.created_at
-                    ).toLocaleString()}
-                  </td>
+                  <td>{new Date(job.created_at).toLocaleString()}</td>
                 </tr>
               ))}
             </tbody>

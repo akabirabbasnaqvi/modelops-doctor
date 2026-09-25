@@ -1,6 +1,4 @@
-export type ProblemType =
-  | "binary_classification"
-  | "multiclass_classification";
+export type ProblemType = "binary_classification" | "multiclass_classification";
 
 export type Project = {
   id: number;

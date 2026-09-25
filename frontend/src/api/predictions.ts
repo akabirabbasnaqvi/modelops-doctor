@@ -14,9 +14,7 @@ export type PredictionBatch = {
   uploaded_at: string;
 };
 
-export async function getPredictionBatches(
-  projectId: number
-) {
+export async function getPredictionBatches(projectId: number) {
   const response = await api.get<{
     total: number;
     batches: PredictionBatch[];
@@ -28,19 +26,16 @@ export async function getPredictionBatches(
 export async function uploadPredictionBatch(
   projectId: number,
   modelVersionId: number,
-  file: File
+  file: File,
 ) {
   const formData = new FormData();
 
-  formData.append(
-    "model_version_id",
-    String(modelVersionId)
-  );
+  formData.append("model_version_id", String(modelVersionId));
   formData.append("file", file);
 
   const response = await api.post(
     `/projects/${projectId}/prediction-batches`,
-    formData
+    formData,
   );
 
   return response.data;

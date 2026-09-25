@@ -2,9 +2,7 @@ type Props = {
   score: number;
 };
 
-export default function HealthGauge({
-  score,
-}: Props) {
+export default function HealthGauge({ score }: Props) {
   let color = "#ef4444";
 
   if (score >= 80) {

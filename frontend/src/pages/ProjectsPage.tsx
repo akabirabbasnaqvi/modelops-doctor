@@ -1,15 +1,8 @@
-import {
-  type FormEvent,
-  useEffect,
-  useState,
-} from "react";
+import { type FormEvent, useEffect, useState } from "react";
 
 import { getErrorMessage } from "../api/errors";
 import { useFormState } from "../hooks/useFormState";
-import {
-  createProject,
-  getProjects,
-} from "../api/projects";
+import { createProject, getProjects } from "../api/projects";
 
 import type {
   ProblemType,
@@ -37,8 +30,7 @@ export default function ProjectsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] =
-    useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   async function loadProjects() {
     try {
@@ -52,8 +44,8 @@ export default function ProjectsPage() {
       setError(
         getErrorMessage(
           requestError,
-          "Projects could not be loaded. Confirm that the backend is running."
-        )
+          "Projects could not be loaded. Confirm that the backend is running.",
+        ),
       );
     } finally {
       setIsLoading(false);
@@ -64,9 +56,7 @@ export default function ProjectsPage() {
     void loadProjects();
   }, []);
 
-  async function handleSubmit(
-    event: FormEvent<HTMLFormElement>
-  ) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     try {
@@ -77,29 +67,22 @@ export default function ProjectsPage() {
       const normalizedData: ProjectCreateRequest = {
         ...formData,
         description: formData.description?.trim() || null,
-        positive_class:
-          formData.positive_class?.trim() || null,
+        positive_class: formData.positive_class?.trim() || null,
         owner: formData.owner?.trim() || null,
       };
 
       const newProject = await createProject(normalizedData);
 
-      setProjects((currentProjects) => [
-        newProject,
-        ...currentProjects,
-      ]);
+      setProjects((currentProjects) => [newProject, ...currentProjects]);
 
       resetForm();
 
       setSuccessMessage(
-        `Project "${newProject.name}" was created successfully.`
+        `Project "${newProject.name}" was created successfully.`,
       );
     } catch (requestError) {
       setError(
-        getErrorMessage(
-          requestError,
-          "The project could not be created."
-        )
+        getErrorMessage(requestError, "The project could not be created."),
       );
     } finally {
       setIsCreating(false);
@@ -111,17 +94,12 @@ export default function ProjectsPage() {
       <header className="page-header">
         <h1>Projects</h1>
 
-        <p>
-          Create and manage machine-learning monitoring
-          workspaces.
-        </p>
+        <p>Create and manage machine-learning monitoring workspaces.</p>
       </header>
 
       {error && <div className="alert error">{error}</div>}
 
-      {successMessage && (
-        <div className="alert success">{successMessage}</div>
-      )}
+      {successMessage && <div className="alert success">{successMessage}</div>}
 
       <section className="panel">
         <h2>Create Project</h2>
@@ -133,9 +111,7 @@ export default function ProjectsPage() {
               required
               minLength={3}
               value={formData.name}
-              onChange={(event) =>
-                updateField("name", event.target.value)
-              }
+              onChange={(event) => updateField("name", event.target.value)}
             />
           </label>
 
@@ -144,10 +120,7 @@ export default function ProjectsPage() {
             <select
               value={formData.problem_type}
               onChange={(event) =>
-                updateField(
-                  "problem_type",
-                  event.target.value as ProblemType
-                )
+                updateField("problem_type", event.target.value as ProblemType)
               }
             >
               <option value="binary_classification">
@@ -166,10 +139,7 @@ export default function ProjectsPage() {
               required
               value={formData.target_column}
               onChange={(event) =>
-                updateField(
-                  "target_column",
-                  event.target.value
-                )
+                updateField("target_column", event.target.value)
               }
             />
           </label>
@@ -179,10 +149,7 @@ export default function ProjectsPage() {
             <input
               value={formData.positive_class ?? ""}
               onChange={(event) =>
-                updateField(
-                  "positive_class",
-                  event.target.value
-                )
+                updateField("positive_class", event.target.value)
               }
             />
           </label>
@@ -192,10 +159,7 @@ export default function ProjectsPage() {
             <select
               value={formData.metric_priority}
               onChange={(event) =>
-                updateField(
-                  "metric_priority",
-                  event.target.value
-                )
+                updateField("metric_priority", event.target.value)
               }
             >
               <option value="f1">F1 Score</option>
@@ -210,9 +174,7 @@ export default function ProjectsPage() {
             Owner
             <input
               value={formData.owner ?? ""}
-              onChange={(event) =>
-                updateField("owner", event.target.value)
-              }
+              onChange={(event) => updateField("owner", event.target.value)}
             />
           </label>
 
@@ -221,10 +183,7 @@ export default function ProjectsPage() {
             <textarea
               value={formData.description ?? ""}
               onChange={(event) =>
-                updateField(
-                  "description",
-                  event.target.value
-                )
+                updateField("description", event.target.value)
               }
               rows={3}
             />
@@ -250,10 +209,7 @@ export default function ProjectsPage() {
         ) : (
           <div className="card-grid">
             {projects.map((project) => (
-              <article
-                className="dashboard-card"
-                key={project.id}
-              >
+              <article className="dashboard-card" key={project.id}>
                 <h3>{project.name}</h3>
 
                 <p>
@@ -262,23 +218,19 @@ export default function ProjectsPage() {
                 </p>
 
                 <p>
-                  <strong>Problem:</strong>{" "}
-                  {project.problem_type}
+                  <strong>Problem:</strong> {project.problem_type}
                 </p>
 
                 <p>
-                  <strong>Target:</strong>{" "}
-                  {project.target_column}
+                  <strong>Target:</strong> {project.target_column}
                 </p>
 
                 <p>
-                  <strong>Priority metric:</strong>{" "}
-                  {project.metric_priority}
+                  <strong>Priority metric:</strong> {project.metric_priority}
                 </p>
 
                 <p>
-                  <strong>Owner:</strong>{" "}
-                  {project.owner || "Not specified"}
+                  <strong>Owner:</strong> {project.owner || "Not specified"}
                 </p>
 
                 <small>Project ID: {project.id}</small>

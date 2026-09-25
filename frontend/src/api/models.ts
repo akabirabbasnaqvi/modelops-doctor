@@ -32,10 +32,10 @@ export type ModelVersionCreateRequest = {
 };
 
 export async function getModels(
-  projectId: number
+  projectId: number,
 ): Promise<ModelVersionListResponse> {
   const response = await api.get<ModelVersionListResponse>(
-    `/projects/${projectId}/models`
+    `/projects/${projectId}/models`,
   );
 
   return response.data;
@@ -43,11 +43,11 @@ export async function getModels(
 
 export async function registerModel(
   projectId: number,
-  modelData: ModelVersionCreateRequest
+  modelData: ModelVersionCreateRequest,
 ): Promise<ModelVersion> {
   const response = await api.post<ModelVersion>(
     `/projects/${projectId}/models`,
-    modelData
+    modelData,
   );
 
   return response.data;

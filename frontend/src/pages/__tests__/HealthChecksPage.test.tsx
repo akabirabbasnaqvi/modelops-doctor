@@ -161,7 +161,9 @@ describe("HealthChecksPage", () => {
 
       const user = userEvent.setup();
 
-      await user.click(screen.getByRole("button", { name: /run health check/i }));
+      await user.click(
+        screen.getByRole("button", { name: /run health check/i }),
+      );
 
       await waitFor(() => {
         expect(mockedRunHealthCheck).toHaveBeenCalledWith(1, 1, 1, 1);
@@ -179,7 +181,9 @@ describe("HealthChecksPage", () => {
 
       const user = userEvent.setup();
 
-      await user.click(screen.getByRole("button", { name: /run health check/i }));
+      await user.click(
+        screen.getByRole("button", { name: /run health check/i }),
+      );
 
       expect(await screen.findByText("91.20")).toBeInTheDocument();
       expect(screen.getByText("The model is healthy.")).toBeInTheDocument();
@@ -216,7 +220,9 @@ describe("HealthChecksPage", () => {
 
       const user = userEvent.setup();
 
-      await user.click(screen.getByRole("button", { name: /run health check/i }));
+      await user.click(
+        screen.getByRole("button", { name: /run health check/i }),
+      );
 
       expect(
         await screen.findByText("Baseline dataset is missing."),
@@ -231,7 +237,9 @@ describe("HealthChecksPage", () => {
 
       const user = userEvent.setup();
 
-      await user.click(screen.getByRole("button", { name: /run health check/i }));
+      await user.click(
+        screen.getByRole("button", { name: /run health check/i }),
+      );
 
       expect(
         await screen.findByText("The health check failed."),

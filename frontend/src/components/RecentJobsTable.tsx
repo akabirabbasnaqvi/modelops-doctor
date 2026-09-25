@@ -13,9 +13,7 @@ type Props = {
   jobs: RecentJob[];
 };
 
-export default function RecentJobsTable({
-  jobs,
-}: Props) {
+export default function RecentJobsTable({ jobs }: Props) {
   return (
     <table className="data-table">
       <thead>

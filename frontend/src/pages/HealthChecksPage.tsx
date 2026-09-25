@@ -7,18 +7,13 @@ import {
   runHealthCheck,
 } from "../api/healthChecks";
 
-import type {
-  DiagnosisReport,
-  HealthCheck,
-} from "../api/healthChecks";
+import type { DiagnosisReport, HealthCheck } from "../api/healthChecks";
 
 const PROJECT_ID = 1;
 
 export default function HealthChecksPage() {
-  const [healthCheck, setHealthCheck] =
-    useState<HealthCheck | null>(null);
-  const [report, setReport] =
-    useState<DiagnosisReport | null>(null);
+  const [healthCheck, setHealthCheck] = useState<HealthCheck | null>(null);
+  const [report, setReport] = useState<DiagnosisReport | null>(null);
   const [running, setRunning] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -43,22 +38,12 @@ export default function HealthChecksPage() {
       setRunning(true);
       setError(null);
 
-      const result = await runHealthCheck(
-        PROJECT_ID,
-        1,
-        1,
-        1
-      );
+      const result = await runHealthCheck(PROJECT_ID, 1, 1, 1);
 
       setHealthCheck(result.health_check);
       setReport(result.diagnosis_report);
     } catch (requestError) {
-      setError(
-        getErrorMessage(
-          requestError,
-          "The health check failed."
-        )
-      );
+      setError(getErrorMessage(requestError, "The health check failed."));
     } finally {
       setRunning(false);
     }
@@ -69,9 +54,7 @@ export default function HealthChecksPage() {
       <header className="page-header action-header">
         <div>
           <h1>Model Health</h1>
-          <p>
-            Review performance, drift, risk, and suggested actions.
-          </p>
+          <p>Review performance, drift, risk, and suggested actions.</p>
         </div>
 
         <button
@@ -95,32 +78,25 @@ export default function HealthChecksPage() {
 
             <MetricCard
               title="Accuracy"
-              value={
-                healthCheck.metrics.accuracy?.toFixed(3) ??
-                "N/A"
-              }
+              value={healthCheck.metrics.accuracy?.toFixed(3) ?? "N/A"}
             />
 
             <MetricCard
               title="F1 Score"
-              value={
-                healthCheck.metrics.f1?.toFixed(3) ?? "N/A"
-              }
+              value={healthCheck.metrics.f1?.toFixed(3) ?? "N/A"}
             />
 
             <MetricCard
               title="Drift Rate"
-              value={`${(
-                (healthCheck.drift.drift_rate ?? 0) * 100
-              ).toFixed(0)}%`}
+              value={`${((healthCheck.drift.drift_rate ?? 0) * 100).toFixed(
+                0,
+              )}%`}
             />
 
             <MetricCard
               title="Average Confidence"
               value={
-                healthCheck.metrics.average_confidence?.toFixed(
-                  3
-                ) ?? "N/A"
+                healthCheck.metrics.average_confidence?.toFixed(3) ?? "N/A"
               }
             />
           </div>
@@ -128,24 +104,24 @@ export default function HealthChecksPage() {
           <section className="panel">
             <h2>Component Scores</h2>
 
-            {Object.entries(
-              healthCheck.component_scores
-            ).map(([name, score]) => (
-              <div className="score-row" key={name}>
-                <span>{formatLabel(name)}</span>
+            {Object.entries(healthCheck.component_scores).map(
+              ([name, score]) => (
+                <div className="score-row" key={name}>
+                  <span>{formatLabel(name)}</span>
 
-                <div className="score-track">
-                  <div
-                    className="score-fill"
-                    style={{
-                      width: `${score}%`,
-                    }}
-                  />
+                  <div className="score-track">
+                    <div
+                      className="score-fill"
+                      style={{
+                        width: `${score}%`,
+                      }}
+                    />
+                  </div>
+
+                  <strong>{score.toFixed(1)}</strong>
                 </div>
-
-                <strong>{score.toFixed(1)}</strong>
-              </div>
-            ))}
+              ),
+            )}
           </section>
         </>
       )}
@@ -173,8 +149,7 @@ export default function HealthChecksPage() {
           <ul>
             {report.findings.map((finding) => (
               <li key={finding.code}>
-                <strong>{finding.code}:</strong>{" "}
-                {finding.message}
+                <strong>{finding.code}:</strong> {finding.message}
               </li>
             ))}
           </ul>
@@ -182,13 +157,9 @@ export default function HealthChecksPage() {
           <h3>Recommendations</h3>
 
           <ol>
-            {report.recommendations.map(
-              (recommendation) => (
-                <li key={recommendation}>
-                  {recommendation}
-                </li>
-              )
-            )}
+            {report.recommendations.map((recommendation) => (
+              <li key={recommendation}>{recommendation}</li>
+            ))}
           </ol>
         </section>
       )}
@@ -196,13 +167,7 @@ export default function HealthChecksPage() {
   );
 }
 
-function MetricCard({
-  title,
-  value,
-}: {
-  title: string;
-  value: string;
-}) {
+function MetricCard({ title, value }: { title: string; value: string }) {
   return (
     <article className="metric-card">
       <span>{title}</span>
@@ -214,9 +179,6 @@ function MetricCard({
 function formatLabel(value: string) {
   return value
     .split("_")
-    .map(
-      (word) =>
-        word.charAt(0).toUpperCase() + word.slice(1)
-    )
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 }

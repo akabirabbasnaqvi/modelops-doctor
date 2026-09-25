@@ -1,13 +1,6 @@
-import {
-  type FormEvent,
-  useEffect,
-  useState,
-} from "react";
+import { type FormEvent, useEffect, useState } from "react";
 
-import {
-  getDatasets,
-  uploadDataset,
-} from "../api/datasets";
+import { getDatasets, uploadDataset } from "../api/datasets";
 import { getErrorMessage } from "../api/errors";
 
 import type { Dataset } from "../api/datasets";
@@ -16,13 +9,11 @@ const PROJECT_ID = 1;
 
 export default function DatasetsPage() {
   const [datasets, setDatasets] = useState<Dataset[]>([]);
-  const [datasetType, setDatasetType] =
-    useState("training");
+  const [datasetType, setDatasetType] = useState("training");
   const [version, setVersion] = useState("2.0.0");
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] =
-    useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
 
   async function loadDatasets() {
@@ -38,9 +29,7 @@ export default function DatasetsPage() {
     void loadDatasets();
   }, []);
 
-  async function handleUpload(
-    event: FormEvent<HTMLFormElement>
-  ) {
+  async function handleUpload(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (!file) {
@@ -53,23 +42,13 @@ export default function DatasetsPage() {
       setError(null);
       setSuccess(null);
 
-      await uploadDataset(
-        PROJECT_ID,
-        datasetType,
-        version,
-        file
-      );
+      await uploadDataset(PROJECT_ID, datasetType, version, file);
 
       setSuccess("Dataset uploaded and profiled successfully.");
       setFile(null);
       await loadDatasets();
     } catch (requestError) {
-      setError(
-        getErrorMessage(
-          requestError,
-          "Dataset upload failed."
-        )
-      );
+      setError(getErrorMessage(requestError, "Dataset upload failed."));
     } finally {
       setUploading(false);
     }
@@ -79,30 +58,21 @@ export default function DatasetsPage() {
     <div>
       <header className="page-header">
         <h1>Datasets</h1>
-        <p>
-          Upload baseline, evaluation, and production datasets.
-        </p>
+        <p>Upload baseline, evaluation, and production datasets.</p>
       </header>
 
       {error && <div className="alert error">{error}</div>}
-      {success && (
-        <div className="alert success">{success}</div>
-      )}
+      {success && <div className="alert success">{success}</div>}
 
       <section className="panel">
         <h2>Upload CSV Dataset</h2>
 
-        <form
-          className="form-grid"
-          onSubmit={handleUpload}
-        >
+        <form className="form-grid" onSubmit={handleUpload}>
           <label>
             Dataset Type
             <select
               value={datasetType}
-              onChange={(event) =>
-                setDatasetType(event.target.value)
-              }
+              onChange={(event) => setDatasetType(event.target.value)}
             >
               <option value="training">Training</option>
               <option value="validation">Validation</option>
@@ -116,9 +86,7 @@ export default function DatasetsPage() {
             <input
               required
               value={version}
-              onChange={(event) =>
-                setVersion(event.target.value)
-              }
+              onChange={(event) => setVersion(event.target.value)}
             />
           </label>
 
@@ -128,20 +96,12 @@ export default function DatasetsPage() {
               required
               type="file"
               accept=".csv,text/csv"
-              onChange={(event) =>
-                setFile(event.target.files?.[0] ?? null)
-              }
+              onChange={(event) => setFile(event.target.files?.[0] ?? null)}
             />
           </label>
 
-          <button
-            className="primary-button"
-            type="submit"
-            disabled={uploading}
-          >
-            {uploading
-              ? "Uploading..."
-              : "Upload and Profile"}
+          <button className="primary-button" type="submit" disabled={uploading}>
+            {uploading ? "Uploading..." : "Upload and Profile"}
           </button>
         </form>
       </section>

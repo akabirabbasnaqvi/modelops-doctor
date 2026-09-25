@@ -64,11 +64,7 @@ export default function AppLayout() {
         <FiMenu />
       </button>
 
-      <aside
-        className={`sidebar ${
-          sidebarOpen ? "sidebar-open" : ""
-        }`}
-      >
+      <aside className={`sidebar ${sidebarOpen ? "sidebar-open" : ""}`}>
         <div className="brand-row">
           <div>
             <strong>ModelOps Doctor</strong>
@@ -95,9 +91,7 @@ export default function AppLayout() {
                 end={item.end}
                 onClick={() => setSidebarOpen(false)}
                 className={({ isActive }) =>
-                  isActive
-                    ? "navigation-link active"
-                    : "navigation-link"
+                  isActive ? "navigation-link active" : "navigation-link"
                 }
               >
                 <Icon />
