@@ -13,7 +13,7 @@ pytest-cov==7.1.0
 httpx==0.28.1
 
 # Linting and formatting
-ruff==0.13.0
+ruff==0.16.8
 
 # Dependency vulnerability auditing
 pip-audit==2.10.1
