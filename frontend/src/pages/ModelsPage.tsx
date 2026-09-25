@@ -4,6 +4,8 @@ import {
   useState,
 } from "react";
 
+import { getErrorMessage } from "../api/errors";
+import { useFormState } from "../hooks/useFormState";
 import {
   getModels,
   registerModel,
@@ -34,8 +36,12 @@ const initialForm: ModelVersionCreateRequest = {
 
 export default function ModelsPage() {
   const [models, setModels] = useState<ModelVersion[]>([]);
-  const [formData, setFormData] =
-    useState<ModelVersionCreateRequest>(initialForm);
+  const {
+    values: formData,
+    setValues: setFormData,
+    updateField,
+    reset: resetForm,
+  } = useFormState<ModelVersionCreateRequest>(initialForm);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -91,12 +97,14 @@ export default function ModelsPage() {
         ...current,
       ]);
 
-      setFormData(initialForm);
+      resetForm();
       setSuccess("Model version registered successfully.");
-    } catch (requestError: any) {
+    } catch (requestError) {
       setError(
-        requestError?.response?.data?.detail ??
+        getErrorMessage(
+          requestError,
           "The model version could not be registered."
+        )
       );
     }
   }
@@ -129,10 +137,7 @@ export default function ModelsPage() {
               required
               value={formData.name}
               onChange={(event) =>
-                setFormData({
-                  ...formData,
-                  name: event.target.value,
-                })
+                updateField("name", event.target.value)
               }
             />
           </label>
@@ -143,10 +148,7 @@ export default function ModelsPage() {
               required
               value={formData.version}
               onChange={(event) =>
-                setFormData({
-                  ...formData,
-                  version: event.target.value,
-                })
+                updateField("version", event.target.value)
               }
             />
           </label>
@@ -157,10 +159,7 @@ export default function ModelsPage() {
               required
               value={formData.algorithm}
               onChange={(event) =>
-                setFormData({
-                  ...formData,
-                  algorithm: event.target.value,
-                })
+                updateField("algorithm", event.target.value)
               }
             />
           </label>
@@ -171,10 +170,7 @@ export default function ModelsPage() {
               required
               value={formData.framework}
               onChange={(event) =>
-                setFormData({
-                  ...formData,
-                  framework: event.target.value,
-                })
+                updateField("framework", event.target.value)
               }
             />
           </label>
@@ -202,11 +198,10 @@ export default function ModelsPage() {
             <input
               value={formData.artifact_uri ?? ""}
               onChange={(event) =>
-                setFormData({
-                  ...formData,
-                  artifact_uri:
-                    event.target.value || null,
-                })
+                updateField(
+                  "artifact_uri",
+                  event.target.value || null
+                )
               }
               placeholder="artifacts/model.joblib"
             />

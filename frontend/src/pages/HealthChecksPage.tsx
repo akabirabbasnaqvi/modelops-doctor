@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { getErrorMessage } from "../api/errors";
 import {
   getDiagnosisReport,
   getLatestHealthCheck,
@@ -51,10 +52,12 @@ export default function HealthChecksPage() {
 
       setHealthCheck(result.health_check);
       setReport(result.diagnosis_report);
-    } catch (requestError: any) {
+    } catch (requestError) {
       setError(
-        requestError?.response?.data?.detail ??
+        getErrorMessage(
+          requestError,
           "The health check failed."
+        )
       );
     } finally {
       setRunning(false);

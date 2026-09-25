@@ -8,6 +8,7 @@ import {
   getDatasets,
   uploadDataset,
 } from "../api/datasets";
+import { getErrorMessage } from "../api/errors";
 
 import type { Dataset } from "../api/datasets";
 
@@ -62,10 +63,12 @@ export default function DatasetsPage() {
       setSuccess("Dataset uploaded and profiled successfully.");
       setFile(null);
       await loadDatasets();
-    } catch (requestError: any) {
+    } catch (requestError) {
       setError(
-        requestError?.response?.data?.detail ??
+        getErrorMessage(
+          requestError,
           "Dataset upload failed."
+        )
       );
     } finally {
       setUploading(false);

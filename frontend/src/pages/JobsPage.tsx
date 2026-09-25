@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { getErrorMessage } from "../api/errors";
 import {
   getJobs,
   queueHealthCheck,
@@ -40,10 +41,12 @@ export default function JobsPage() {
 
       await queueHealthCheck(PROJECT_ID);
       await loadJobs();
-    } catch (requestError: any) {
+    } catch (requestError) {
       setError(
-        requestError?.response?.data?.detail ??
+        getErrorMessage(
+          requestError,
           "The background task could not be queued."
+        )
       );
     } finally {
       setQueuing(false);

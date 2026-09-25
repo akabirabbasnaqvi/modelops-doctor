@@ -221,6 +221,36 @@ describe("ModelsPage", () => {
       ).toBeInTheDocument();
     });
 
+    it("renders FastAPI validation errors instead of crashing", async () => {
+      mockedRegisterModel.mockRejectedValue({
+        response: {
+          status: 422,
+          data: {
+            detail: [
+              {
+                loc: ["body", "name"],
+                msg: "String should have at most 150 characters",
+                type: "string_too_long",
+              },
+            ],
+          },
+        },
+      });
+
+      render(<ModelsPage />);
+
+      const user = await fillRequiredFields();
+
+      await user.click(screen.getByRole("button", { name: /register model/i }));
+
+      expect(
+        await screen.findByText("String should have at most 150 characters"),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("heading", { name: /model registry/i }),
+      ).toBeInTheDocument();
+    });
+
     it("falls back to a generic message when the error has no detail", async () => {
       mockedRegisterModel.mockRejectedValue(new Error("boom"));
 

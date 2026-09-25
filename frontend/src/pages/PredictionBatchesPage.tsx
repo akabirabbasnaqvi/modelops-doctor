@@ -4,6 +4,7 @@ import {
   useState,
 } from "react";
 
+import { getErrorMessage } from "../api/errors";
 import {
   getPredictionBatches,
   uploadPredictionBatch,
@@ -61,10 +62,12 @@ export default function PredictionBatchesPage() {
       setMessage("Prediction log processed successfully.");
       setFile(null);
       await loadBatches();
-    } catch (requestError: any) {
+    } catch (requestError) {
       setError(
-        requestError?.response?.data?.detail ??
+        getErrorMessage(
+          requestError,
           "Prediction-log upload failed."
+        )
       );
     }
   }

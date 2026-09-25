@@ -4,6 +4,8 @@ import {
   useState,
 } from "react";
 
+import { getErrorMessage } from "../api/errors";
+import { useFormState } from "../hooks/useFormState";
 import {
   createProject,
   getProjects,
@@ -27,8 +29,11 @@ const initialFormData: ProjectCreateRequest = {
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
-  const [formData, setFormData] =
-    useState<ProjectCreateRequest>(initialFormData);
+  const {
+    values: formData,
+    updateField,
+    reset: resetForm,
+  } = useFormState<ProjectCreateRequest>(initialFormData);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -81,33 +86,21 @@ export default function ProjectsPage() {
         ...currentProjects,
       ]);
 
-      setFormData(initialFormData);
+      resetForm();
 
       setSuccessMessage(
         `Project "${newProject.name}" was created successfully.`
       );
-    } catch (requestError: any) {
-      const detail =
-        requestError?.response?.data?.detail;
-
+    } catch (requestError) {
       setError(
-        typeof detail === "string"
-          ? detail
-          : "The project could not be created."
+        getErrorMessage(
+          requestError,
+          "The project could not be created."
+        )
       );
     } finally {
       setIsCreating(false);
     }
-  }
-
-  function updateField(
-    field: keyof ProjectCreateRequest,
-    value: string
-  ) {
-    setFormData((currentData) => ({
-      ...currentData,
-      [field]: value,
-    }));
   }
 
   return (
