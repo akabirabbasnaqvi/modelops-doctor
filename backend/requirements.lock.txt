@@ -44,11 +44,11 @@ numpy==2.4.6
 packaging==26.3
 pandas==2.3.3
 prompt_toolkit==3.0.53
-pydantic==2.13.4
+pydantic==2.13.5
 pydantic-settings==2.14.2
 pydantic_core==2.46.4
 python-dateutil==2.9.0.post0
-python-dotenv==1.2.2
+python-dotenv==1.2.3
 python-multipart==0.0.32
 pytz==2026.4
 PyYAML==6.0.3
@@ -56,7 +56,7 @@ redis==7.1.0
 scikit-learn==1.8.0
 scipy==1.17.1
 six==1.17.0
-SQLAlchemy==2.0.48
+SQLAlchemy==2.0.54
 starlette==1.7.0
 threadpoolctl==3.7.0
 tomli==2.4.1
