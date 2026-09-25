@@ -41,7 +41,9 @@ function makeDashboard(overrides: Record<string, unknown> = {}) {
       {
         id: 9,
         job_type: "health_check",
-        status: "completed",
+        // Deliberately not "completed": the health summary above also
+        // renders that word, and an ambiguous getByText would throw.
+        status: "queued",
         created_at: "2026-01-01T00:00:00Z",
         finished_at: "2026-01-01T00:01:00Z",
       },
@@ -146,7 +148,7 @@ describe("DashboardPage", () => {
     ) as HTMLElement;
 
     expect(within(row).getByText("9")).toBeInTheDocument();
-    expect(within(row).getByText("completed")).toBeInTheDocument();
+    expect(within(row).getByText("queued")).toBeInTheDocument();
   });
 
   it("passes the drifted features to the chart", async () => {

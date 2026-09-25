@@ -1,5 +1,10 @@
-import { render, screen, waitFor, within } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import DatasetsPage from "../DatasetsPage";
@@ -33,6 +38,27 @@ function makeDataset(overrides: Partial<Dataset> = {}): Dataset {
 
 function csvFile(name = "churn.csv") {
   return new File(["age,churn\n31,1\n"], name, { type: "text/csv" });
+}
+
+/**
+ * The CSV input is `required`, so jsdom's constraint validation blocks both
+ * a click on the submit button and form.requestSubmit() while it is empty.
+ * Neither ever dispatches `submit`, so the component's own guard is
+ * unreachable through them. Dispatching submit directly is what lets these
+ * tests exercise handleUpload rather than the browser's validation.
+ */
+function submitForm() {
+  const form = screen
+    .getByRole("button", { name: /upload and profile/i })
+    .closest("form") as HTMLFormElement;
+
+  fireEvent.submit(form);
+}
+
+function attachFile(file = csvFile()) {
+  fireEvent.change(screen.getByLabelText(/csv file/i), {
+    target: { files: [file] },
+  });
 }
 
 describe("DatasetsPage", () => {
@@ -83,33 +109,19 @@ describe("DatasetsPage", () => {
     it("refuses to submit without a file", async () => {
       render(<DatasetsPage />);
 
-      const user = userEvent.setup();
-      const form = screen
-        .getByRole("button", { name: /upload and profile/i })
-        .closest("form") as HTMLFormElement;
-
-      // The file input is `required`, so submit the form directly to reach
-      // the component's own guard rather than the browser's.
-      form.requestSubmit();
+      submitForm();
 
       expect(await screen.findByText("Select a CSV file.")).toBeInTheDocument();
       expect(mockedUploadDataset).not.toHaveBeenCalled();
-
-      await user.click(screen.getByRole("button", { name: /upload/i }));
     });
 
-    it("uploads the selected file with type and version", async () => {
+    it("uploads the selected file with the default type and version", async () => {
       mockedUploadDataset.mockResolvedValue({ id: 3 });
 
       render(<DatasetsPage />);
 
-      const user = userEvent.setup();
-
-      await user.upload(screen.getByLabelText(/csv file/i), csvFile());
-
-      await user.click(
-        screen.getByRole("button", { name: /upload and profile/i }),
-      );
+      attachFile();
+      submitForm();
 
       await waitFor(() => {
         expect(mockedUploadDataset).toHaveBeenCalledWith(
@@ -126,23 +138,16 @@ describe("DatasetsPage", () => {
 
       render(<DatasetsPage />);
 
-      const user = userEvent.setup();
+      fireEvent.change(screen.getByLabelText(/dataset type/i), {
+        target: { value: "production" },
+      });
 
-      await user.selectOptions(
-        screen.getByLabelText(/dataset type/i),
-        "production",
-      );
+      fireEvent.change(screen.getByLabelText(/version/i), {
+        target: { value: "3.1.0" },
+      });
 
-      const versionField = screen.getByLabelText(/version/i);
-
-      await user.clear(versionField);
-      await user.type(versionField, "3.1.0");
-
-      await user.upload(screen.getByLabelText(/csv file/i), csvFile());
-
-      await user.click(
-        screen.getByRole("button", { name: /upload and profile/i }),
-      );
+      attachFile();
+      submitForm();
 
       await waitFor(() => {
         expect(mockedUploadDataset).toHaveBeenCalledWith(
@@ -159,12 +164,8 @@ describe("DatasetsPage", () => {
 
       render(<DatasetsPage />);
 
-      const user = userEvent.setup();
-
-      await user.upload(screen.getByLabelText(/csv file/i), csvFile());
-      await user.click(
-        screen.getByRole("button", { name: /upload and profile/i }),
-      );
+      attachFile();
+      submitForm();
 
       expect(
         await screen.findByText("Dataset uploaded and profiled successfully."),
@@ -182,12 +183,8 @@ describe("DatasetsPage", () => {
 
       render(<DatasetsPage />);
 
-      const user = userEvent.setup();
-
-      await user.upload(screen.getByLabelText(/csv file/i), csvFile());
-      await user.click(
-        screen.getByRole("button", { name: /upload and profile/i }),
-      );
+      attachFile();
+      submitForm();
 
       expect(
         await screen.findByText(
@@ -201,12 +198,8 @@ describe("DatasetsPage", () => {
 
       render(<DatasetsPage />);
 
-      const user = userEvent.setup();
-
-      await user.upload(screen.getByLabelText(/csv file/i), csvFile());
-      await user.click(
-        screen.getByRole("button", { name: /upload and profile/i }),
-      );
+      attachFile();
+      submitForm();
 
       expect(
         await screen.findByText("Dataset upload failed."),

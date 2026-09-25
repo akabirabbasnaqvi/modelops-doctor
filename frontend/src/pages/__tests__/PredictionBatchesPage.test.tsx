@@ -1,5 +1,10 @@
-import { render, screen, waitFor, within } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import PredictionBatchesPage from "../PredictionBatchesPage";
@@ -36,6 +41,27 @@ function makeBatch(overrides: Partial<PredictionBatch> = {}): PredictionBatch {
 
 function csvFile(name = "predictions.csv") {
   return new File(["predicted_label\n1\n"], name, { type: "text/csv" });
+}
+
+/**
+ * The prediction CSV input is `required`, so jsdom's constraint validation
+ * blocks both a click on the submit button and form.requestSubmit() while it
+ * is empty — neither dispatches `submit`, leaving the component's own guard
+ * unreachable. Dispatching submit directly exercises handleUpload instead of
+ * the browser's validation.
+ */
+function submitForm() {
+  const form = screen
+    .getByRole("button", { name: /upload prediction log/i })
+    .closest("form") as HTMLFormElement;
+
+  fireEvent.submit(form);
+}
+
+function attachFile(file = csvFile()) {
+  fireEvent.change(screen.getByLabelText(/prediction csv/i), {
+    target: { files: [file] },
+  });
 }
 
 describe("PredictionBatchesPage", () => {
@@ -96,11 +122,7 @@ describe("PredictionBatchesPage", () => {
     it("refuses to submit without a file", async () => {
       render(<PredictionBatchesPage />);
 
-      const form = screen
-        .getByRole("button", { name: /upload prediction log/i })
-        .closest("form") as HTMLFormElement;
-
-      form.requestSubmit();
+      submitForm();
 
       expect(
         await screen.findByText("Select a prediction CSV."),
@@ -108,23 +130,30 @@ describe("PredictionBatchesPage", () => {
       expect(mockedUploadBatch).not.toHaveBeenCalled();
     });
 
-    it("uploads the file against the chosen model version", async () => {
+    it("uploads the file against the default model version", async () => {
       mockedUploadBatch.mockResolvedValue({ id: 4 });
 
       render(<PredictionBatchesPage />);
 
-      const user = userEvent.setup();
+      attachFile();
+      submitForm();
 
-      const modelField = screen.getByLabelText(/model version id/i);
+      await waitFor(() => {
+        expect(mockedUploadBatch).toHaveBeenCalledWith(1, 1, expect.any(File));
+      });
+    });
 
-      await user.clear(modelField);
-      await user.type(modelField, "7");
+    it("uploads against the chosen model version", async () => {
+      mockedUploadBatch.mockResolvedValue({ id: 4 });
 
-      await user.upload(screen.getByLabelText(/prediction csv/i), csvFile());
+      render(<PredictionBatchesPage />);
 
-      await user.click(
-        screen.getByRole("button", { name: /upload prediction log/i }),
-      );
+      fireEvent.change(screen.getByLabelText(/model version id/i), {
+        target: { value: "7" },
+      });
+
+      attachFile();
+      submitForm();
 
       await waitFor(() => {
         expect(mockedUploadBatch).toHaveBeenCalledWith(1, 7, expect.any(File));
@@ -136,12 +165,8 @@ describe("PredictionBatchesPage", () => {
 
       render(<PredictionBatchesPage />);
 
-      const user = userEvent.setup();
-
-      await user.upload(screen.getByLabelText(/prediction csv/i), csvFile());
-      await user.click(
-        screen.getByRole("button", { name: /upload prediction log/i }),
-      );
+      attachFile();
+      submitForm();
 
       expect(
         await screen.findByText("Prediction log processed successfully."),
@@ -162,12 +187,8 @@ describe("PredictionBatchesPage", () => {
 
       render(<PredictionBatchesPage />);
 
-      const user = userEvent.setup();
-
-      await user.upload(screen.getByLabelText(/prediction csv/i), csvFile());
-      await user.click(
-        screen.getByRole("button", { name: /upload prediction log/i }),
-      );
+      attachFile();
+      submitForm();
 
       expect(
         await screen.findByText(
@@ -181,12 +202,8 @@ describe("PredictionBatchesPage", () => {
 
       render(<PredictionBatchesPage />);
 
-      const user = userEvent.setup();
-
-      await user.upload(screen.getByLabelText(/prediction csv/i), csvFile());
-      await user.click(
-        screen.getByRole("button", { name: /upload prediction log/i }),
-      );
+      attachFile();
+      submitForm();
 
       expect(
         await screen.findByText("Prediction-log upload failed."),
