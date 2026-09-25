@@ -17,12 +17,7 @@ export default function RecentJobsTable({
   jobs,
 }: Props) {
   return (
-    <table
-      style={{
-        width: "100%",
-        borderCollapse: "collapse",
-      }}
-    >
+    <table className="data-table">
       <thead>
         <tr>
           <th>ID</th>

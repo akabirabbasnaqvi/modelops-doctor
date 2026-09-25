@@ -17,19 +17,7 @@ export default function HealthGauge({
     <div>
       <h3>Health Score</h3>
 
-      <div
-        style={{
-          width: "180px",
-          height: "180px",
-          borderRadius: "50%",
-          border: `12px solid ${color}`,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          fontSize: "32px",
-          fontWeight: "bold",
-        }}
-      >
+      <div className="health-gauge" style={{ borderColor: color }}>
         {score}
       </div>
     </div>
