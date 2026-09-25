@@ -1,0 +1,62 @@
+version: 2
+
+updates:
+  - package-ecosystem: pip
+    directory: /backend
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - backend
+    groups:
+      # One PR for the test and lint tooling; these move together and are
+      # low risk to review in a batch.
+      dev-tooling:
+        patterns:
+          - pytest*
+          - ruff
+          - httpx
+      # Patch bumps of runtime dependencies, grouped to keep the queue short.
+      runtime-patches:
+        patterns:
+          - "*"
+        update-types:
+          - patch
+
+  - package-ecosystem: npm
+    directory: /frontend
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - frontend
+    groups:
+      testing:
+        patterns:
+          - vitest
+          - "@vitest/*"
+          - "@testing-library/*"
+          - jsdom
+      linting:
+        patterns:
+          - eslint
+          - "@eslint/*"
+          - typescript-eslint
+          - eslint-plugin-*
+          - globals
+      types:
+        patterns:
+          - "@types/*"
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    labels:
+      - dependencies
+      - ci
