@@ -162,14 +162,18 @@ services:
       api:
         condition: service_healthy
     healthcheck:
+      # 127.0.0.1, not localhost: the container resolves localhost to ::1
+      # as well as 127.0.0.1, and nginx only listens on IPv4 (`listen 80`).
+      # busybox wget does not fall back to the next address the way curl
+      # does, so it fails against ::1 and the container never turns healthy.
       test:
         [
           "CMD-SHELL",
-          "wget -q -O /dev/null http://localhost/health || exit 1",
+          "wget --spider -q http://127.0.0.1:80/health || exit 1",
         ]
-      interval: 10s
+      interval: 5s
       timeout: 5s
-      retries: 10
+      retries: 12
       start_period: 10s
     restart: unless-stopped
 

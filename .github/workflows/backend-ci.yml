@@ -144,9 +144,28 @@ jobs:
           curl --fail --silent --show-error http://localhost:5173/ \
             | grep -q '<div id="root">'
 
-      - name: Dump service logs on failure
+      - name: Dump diagnostics on failure
         if: failure()
-        run: docker compose logs --no-color --tail=200
+        run: |
+          echo "::group::container status"
+          docker compose ps --all
+          echo "::endgroup::"
+
+          echo "::group::health check history"
+          for service in db redis api frontend; do
+            container=$(docker compose ps -q "${service}" || true)
+            if [ -n "${container}" ]; then
+              echo "--- ${service} ---"
+              docker inspect \
+                --format '{{json .State.Health}}' "${container}" || true
+              echo
+            fi
+          done
+          echo "::endgroup::"
+
+          echo "::group::service logs"
+          docker compose logs --no-color --tail=200
+          echo "::endgroup::"
 
       - name: Tear down
         if: always()
