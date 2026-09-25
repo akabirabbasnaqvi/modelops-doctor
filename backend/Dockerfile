@@ -12,10 +12,12 @@ RUN apt-get update \
         netcat-openbsd \
     && rm -rf /var/lib/apt/lists/*
 
-COPY backend/requirements.txt /app/backend/requirements.txt
+COPY backend/requirements.lock.txt /app/backend/requirements.lock.txt
 
+# Install from the lockfile so every image build resolves to the same
+# transitive versions.
 RUN python -m pip install --upgrade pip \
-    && python -m pip install -r /app/backend/requirements.txt
+    && python -m pip install -r /app/backend/requirements.lock.txt
 
 COPY backend /app/backend
 COPY ml_examples /app/ml_examples
