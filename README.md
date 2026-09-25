@@ -217,7 +217,46 @@ Expected services:
 - Swagger API documentation: <http://localhost:8000/docs>
 - API health endpoint: <http://localhost:8000/api/v1/health>
 
-### 5. Stop the platform
+### 5. Verify the stack is healthy
+
+Wait until every service reports healthy, then check the two endpoints CI
+checks:
+
+```bash
+docker compose ps
+curl http://localhost:8000/api/v1/health
+curl http://localhost:5173/health
+```
+
+`docker compose ps` should list all six services as `running`, with `db`,
+`redis`, `api` and `frontend` marked `(healthy)`.
+
+The API health endpoint returns HTTP 200 and this JSON, where `timestamp`
+is the current UTC time:
+
+```json
+{
+  "status": "healthy",
+  "service": "modelops-doctor-api",
+  "version": "0.1.0",
+  "environment": "docker",
+  "timestamp": "2026-01-01T12:00:00.000000+00:00"
+}
+```
+
+The frontend health endpoint returns HTTP 200 and the plain text
+`healthy`.
+
+If the API never turns healthy, read its logs:
+
+```bash
+docker compose logs api --tail=50
+```
+
+The same sequence runs in the `compose-smoke` CI job on every push, so a
+fresh clone that fails to boot fails the build.
+
+### 6. Stop the platform
 
 ```bash
 docker compose down
@@ -535,20 +574,38 @@ docker compose ps
 
 ## CI/CD
 
-The GitHub Actions backend workflow:
+Two workflows run on every push and pull request to `main`.
+
+`Backend CI` has two jobs. `backend-quality`:
 
 - Starts PostgreSQL and Redis services
-- Installs Python dependencies
-- Runs Ruff linting
-- Checks Ruff formatting
+- Installs Python dependencies from `requirements-dev.txt`
+- Audits `requirements.lock.txt` with pip-audit and fails on any advisory
+- Fails if the lockfile no longer satisfies `requirements.txt`
+- Runs Ruff linting and formatting checks
 - Applies Alembic migrations
-- Runs pytest with coverage
-- Builds the backend Docker image
+- Runs pytest, failing under 70% coverage
 
-Workflow file:
+`compose-smoke` boots the whole stack with `docker compose up --wait`,
+checks the API and frontend health endpoints, dumps service logs if
+anything fails, and tears the stack down.
+
+`Frontend CI`:
+
+- Installs from `package-lock.json` with `npm ci`
+- Runs ESLint
+- Type-checks with `tsc -b`
+- Runs Vitest with coverage
+- Builds the production bundle
+
+Dependabot raises grouped weekly updates for pip, npm and GitHub Actions.
+
+Workflow files:
 
 ```text
 .github/workflows/backend-ci.yml
+.github/workflows/frontend-ci.yml
+.github/dependabot.yml
 ```
 
 ## Screenshots
