@@ -17,6 +17,9 @@ export default defineConfig({
         "src/test/**",
         "src/main.tsx",
         "src/vite-env.d.ts",
+        // Type-only modules compile to nothing, so they have no runtime
+        // behaviour to cover and only add noise to the report.
+        "src/types/**",
       ],
       // Mirrors the backend's --cov-fail-under=70 so neither side can
       // silently regress. vitest exits non-zero when these are not met.
