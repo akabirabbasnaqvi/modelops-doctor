@@ -54,8 +54,13 @@ export default function ModelsPage() {
       const response = await getModels(PROJECT_ID);
 
       setModels(response.models);
-    } catch {
-      setError("Model versions could not be loaded.");
+    } catch (requestError) {
+      setError(
+        getErrorMessage(
+          requestError,
+          "Model versions could not be loaded."
+        )
+      );
     } finally {
       setLoading(false);
     }

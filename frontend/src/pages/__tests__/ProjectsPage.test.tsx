@@ -68,13 +68,28 @@ describe("ProjectsPage", () => {
       ).toBeInTheDocument();
     });
 
-    it("shows an error when the projects cannot be loaded", async () => {
+    it("shows a fallback error when the request fails without a response", async () => {
       mockedGetProjects.mockRejectedValue(new Error("network down"));
 
       render(<ProjectsPage />);
 
       expect(
         await screen.findByText(/projects could not be loaded/i),
+      ).toBeInTheDocument();
+    });
+
+    it("surfaces the backend error detail when loading fails", async () => {
+      mockedGetProjects.mockRejectedValue({
+        response: {
+          status: 500,
+          data: { detail: "Database connection pool exhausted." },
+        },
+      });
+
+      render(<ProjectsPage />);
+
+      expect(
+        await screen.findByText("Database connection pool exhausted."),
       ).toBeInTheDocument();
     });
 

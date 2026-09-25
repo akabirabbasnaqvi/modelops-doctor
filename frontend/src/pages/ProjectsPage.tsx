@@ -48,9 +48,12 @@ export default function ProjectsPage() {
       const response = await getProjects();
 
       setProjects(response.projects);
-    } catch {
+    } catch (requestError) {
       setError(
-        "Projects could not be loaded. Confirm that the backend is running."
+        getErrorMessage(
+          requestError,
+          "Projects could not be loaded. Confirm that the backend is running."
+        )
       );
     } finally {
       setIsLoading(false);
@@ -105,63 +108,25 @@ export default function ProjectsPage() {
 
   return (
     <div>
-      <div style={{ marginBottom: "30px" }}>
+      <header className="page-header">
         <h1>Projects</h1>
 
         <p>
           Create and manage machine-learning monitoring
           workspaces.
         </p>
-      </div>
+      </header>
 
-      {error && (
-        <div
-          style={{
-            marginBottom: "20px",
-            padding: "14px",
-            borderRadius: "8px",
-            color: "#991b1b",
-            background: "#fee2e2",
-          }}
-        >
-          {error}
-        </div>
-      )}
+      {error && <div className="alert error">{error}</div>}
 
       {successMessage && (
-        <div
-          style={{
-            marginBottom: "20px",
-            padding: "14px",
-            borderRadius: "8px",
-            color: "#166534",
-            background: "#dcfce7",
-          }}
-        >
-          {successMessage}
-        </div>
+        <div className="alert success">{successMessage}</div>
       )}
 
-      <section
-        style={{
-          marginBottom: "32px",
-          padding: "24px",
-          borderRadius: "12px",
-          background: "white",
-          boxShadow: "0 1px 3px rgba(0, 0, 0, 0.15)",
-        }}
-      >
+      <section className="panel">
         <h2>Create Project</h2>
 
-        <form
-          onSubmit={handleSubmit}
-          style={{
-            display: "grid",
-            gridTemplateColumns:
-              "repeat(auto-fit, minmax(240px, 1fr))",
-            gap: "18px",
-          }}
-        >
+        <form className="form-grid" onSubmit={handleSubmit}>
           <label>
             Project Name
             <input
@@ -171,7 +136,6 @@ export default function ProjectsPage() {
               onChange={(event) =>
                 updateField("name", event.target.value)
               }
-              style={inputStyle}
             />
           </label>
 
@@ -185,7 +149,6 @@ export default function ProjectsPage() {
                   event.target.value as ProblemType
                 )
               }
-              style={inputStyle}
             >
               <option value="binary_classification">
                 Binary Classification
@@ -208,7 +171,6 @@ export default function ProjectsPage() {
                   event.target.value
                 )
               }
-              style={inputStyle}
             />
           </label>
 
@@ -222,7 +184,6 @@ export default function ProjectsPage() {
                   event.target.value
                 )
               }
-              style={inputStyle}
             />
           </label>
 
@@ -236,7 +197,6 @@ export default function ProjectsPage() {
                   event.target.value
                 )
               }
-              style={inputStyle}
             >
               <option value="f1">F1 Score</option>
               <option value="accuracy">Accuracy</option>
@@ -253,15 +213,10 @@ export default function ProjectsPage() {
               onChange={(event) =>
                 updateField("owner", event.target.value)
               }
-              style={inputStyle}
             />
           </label>
 
-          <label
-            style={{
-              gridColumn: "1 / -1",
-            }}
-          >
+          <label className="full-width">
             Description
             <textarea
               value={formData.description ?? ""}
@@ -272,37 +227,20 @@ export default function ProjectsPage() {
                 )
               }
               rows={3}
-              style={{
-                ...inputStyle,
-                resize: "vertical",
-              }}
             />
           </label>
 
           <button
+            className="primary-button"
             type="submit"
             disabled={isCreating}
-            style={{
-              width: "180px",
-              padding: "12px 18px",
-              border: "none",
-              borderRadius: "8px",
-              color: "white",
-              background: isCreating
-                ? "#64748b"
-                : "#2563eb",
-              cursor: isCreating
-                ? "not-allowed"
-                : "pointer",
-              fontWeight: 600,
-            }}
           >
             {isCreating ? "Creating..." : "Create Project"}
           </button>
         </form>
       </section>
 
-      <section>
+      <section className="panel">
         <h2>Registered Projects</h2>
 
         {isLoading ? (
@@ -310,24 +248,11 @@ export default function ProjectsPage() {
         ) : projects.length === 0 ? (
           <p>No projects have been created.</p>
         ) : (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns:
-                "repeat(auto-fit, minmax(300px, 1fr))",
-              gap: "20px",
-            }}
-          >
+          <div className="card-grid">
             {projects.map((project) => (
               <article
+                className="dashboard-card"
                 key={project.id}
-                style={{
-                  padding: "22px",
-                  borderRadius: "12px",
-                  background: "white",
-                  boxShadow:
-                    "0 1px 3px rgba(0, 0, 0, 0.15)",
-                }}
               >
                 <h3>{project.name}</h3>
 
@@ -365,15 +290,3 @@ export default function ProjectsPage() {
     </div>
   );
 }
-
-const inputStyle = {
-  boxSizing: "border-box" as const,
-  display: "block",
-  width: "100%",
-  marginTop: "8px",
-  padding: "11px 12px",
-  border: "1px solid #cbd5e1",
-  borderRadius: "8px",
-  font: "inherit",
-  background: "white",
-};

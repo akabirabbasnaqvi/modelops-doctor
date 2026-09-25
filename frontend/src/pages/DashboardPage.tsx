@@ -66,21 +66,16 @@ export default function DashboardPage() {
 
   return (
     <div>
-      <h1>{data.project_name}</h1>
+      <header className="page-header">
+        <h1>{data.project_name}</h1>
 
-      <p>
-        Monitor registered models, datasets, prediction batches,
-        automated jobs, and model health.
-      </p>
+        <p>
+          Monitor registered models, datasets, prediction batches,
+          automated jobs, and model health.
+        </p>
+      </header>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-          gap: "20px",
-          marginBottom: "30px",
-        }}
-      >
+      <div className="dashboard-grid">
         <StatCard title="Models" value={data.counts.models} />
 
         <StatCard title="Datasets" value={data.counts.datasets} />
@@ -96,18 +91,7 @@ export default function DashboardPage() {
         />
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "60px",
-          alignItems: "center",
-          padding: "24px",
-          background: "white",
-          borderRadius: "12px",
-          boxShadow: "0 1px 3px rgba(0, 0, 0, 0.15)",
-        }}
-      >
+      <div className="panel health-summary">
         <HealthGauge score={latestHealth?.health_score ?? 0} />
 
         <div>
@@ -129,29 +113,15 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div
-        style={{
-          marginTop: "40px",
-          padding: "24px",
-          background: "white",
-          borderRadius: "12px",
-          boxShadow: "0 1px 3px rgba(0, 0, 0, 0.15)",
-        }}
-      >
+      <section className="panel">
         <h2>Recent Jobs</h2>
 
-        <RecentJobsTable jobs={data.recent_jobs} />
-      </div>
+        <div className="table-wrapper">
+          <RecentJobsTable jobs={data.recent_jobs} />
+        </div>
+      </section>
 
-      <div
-        style={{
-          marginTop: "40px",
-          padding: "24px",
-          background: "white",
-          borderRadius: "12px",
-          boxShadow: "0 1px 3px rgba(0, 0, 0, 0.15)",
-        }}
-      >
+      <section className="panel">
         <h2>Drifted Features</h2>
 
         <p>
@@ -164,7 +134,7 @@ export default function DashboardPage() {
             latestHealth?.drifted_features ?? []
           }
         />
-      </div>
+      </section>
     </div>
   );
 }

@@ -95,13 +95,28 @@ describe("ModelsPage", () => {
       expect(await screen.findByText("N/A")).toBeInTheDocument();
     });
 
-    it("shows an error when models cannot be loaded", async () => {
+    it("shows a fallback error when the request fails without a response", async () => {
       mockedGetModels.mockRejectedValue(new Error("network down"));
 
       render(<ModelsPage />);
 
       expect(
         await screen.findByText("Model versions could not be loaded."),
+      ).toBeInTheDocument();
+    });
+
+    it("surfaces the backend error detail when loading fails", async () => {
+      mockedGetModels.mockRejectedValue({
+        response: {
+          status: 404,
+          data: { detail: "Project with ID 1 was not found." },
+        },
+      });
+
+      render(<ModelsPage />);
+
+      expect(
+        await screen.findByText("Project with ID 1 was not found."),
       ).toBeInTheDocument();
     });
   });
