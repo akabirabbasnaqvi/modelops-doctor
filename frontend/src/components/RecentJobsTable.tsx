@@ -1,5 +1,16 @@
+/**
+ * The subset of an automation job this table renders. Declared structurally
+ * rather than importing AutomationJob so the dashboard's lighter job summary
+ * can be passed in too.
+ */
+type RecentJob = {
+  id: number;
+  job_type: string;
+  status: string;
+};
+
 type Props = {
-  jobs: any[];
+  jobs: RecentJob[];
 };
 
 export default function RecentJobsTable({

@@ -1,13 +1,27 @@
 import { api } from "./client";
 
+/**
+ * Result recorded by the health-check Celery task in
+ * app/workers/tasks.py. Empty while a job is queued or running, and empty
+ * on failure, so every field is optional.
+ */
+export type AutomationJobResult = {
+  health_check_id?: number;
+  diagnosis_report_id?: number;
+  health_score?: number | null;
+  status?: string;
+  risk_level?: string;
+  retraining_recommended?: boolean;
+};
+
 export type AutomationJob = {
   id: number;
   project_id: number | null;
   job_type: string;
   status: string;
   celery_task_id: string | null;
-  payload: Record<string, any>;
-  result: Record<string, any>;
+  payload: Record<string, unknown>;
+  result: AutomationJobResult;
   error_message: string | null;
   created_at: string;
   started_at: string | null;

@@ -1,5 +1,38 @@
 import { api } from "./client";
 
+/**
+ * Classification metrics produced by app/mlops/metrics.py.
+ *
+ * Confidence and roc_auc are null when the prediction log carries no
+ * confidence column or the problem is not binary, so every numeric field is
+ * optional and nullable. The index signature covers the remaining keys
+ * (confusion_matrix, per_class, class distributions) that the UI does not
+ * read yet.
+ */
+export type HealthCheckMetrics = {
+  sample_count?: number;
+  accuracy?: number | null;
+  precision?: number | null;
+  recall?: number | null;
+  f1?: number | null;
+  error_rate?: number | null;
+  roc_auc?: number | null;
+  average_confidence?: number | null;
+  low_confidence_rate?: number | null;
+  minimum_confidence?: number | null;
+  maximum_confidence?: number | null;
+  [key: string]: unknown;
+};
+
+/** Drift summary produced by app/mlops/drift.py. */
+export type DriftSummary = {
+  feature_count?: number;
+  drifted_feature_count?: number;
+  drift_rate?: number | null;
+  drifted_features?: string[];
+  [key: string]: unknown;
+};
+
 export type HealthCheck = {
   id: number;
   project_id: number;
@@ -8,8 +41,8 @@ export type HealthCheck = {
   prediction_batch_id: number;
   status: string;
   health_score: number;
-  metrics: Record<string, any>;
-  drift: Record<string, any>;
+  metrics: HealthCheckMetrics;
+  drift: DriftSummary;
   component_scores: Record<string, number>;
   missing_rate: number;
   created_at: string;
