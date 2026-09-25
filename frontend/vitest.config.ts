@@ -18,6 +18,14 @@ export default defineConfig({
         "src/main.tsx",
         "src/vite-env.d.ts",
       ],
+      // Mirrors the backend's --cov-fail-under=70 so neither side can
+      // silently regress. vitest exits non-zero when these are not met.
+      thresholds: {
+        lines: 70,
+        statements: 70,
+        branches: 70,
+        functions: 70,
+      },
     },
   },
 });
