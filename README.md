@@ -157,7 +157,7 @@ ModelOps_Doctor_Project/
 │   │   └── workers/
 │   ├── tests/
 │   ├── Dockerfile
-│   └── requirements.docker.txt
+│   └── requirements.lock.txt
 ├── frontend/
 │   ├── src/
 │   │   ├── api/
@@ -186,8 +186,8 @@ ModelOps_Doctor_Project/
 ### 1. Clone the repository
 
 ```bash
-git clone <your-repository-url>
-cd ModelOps_Doctor_Project
+git clone https://github.com/akabirabbasnaqvi/modelops-doctor.git
+cd modelops-doctor
 ```
 
 ### 2. Build and start the platform
@@ -270,7 +270,7 @@ docker compose down -v
 
 ## Local Development
 
-Python 3.11 or newer and Node.js 20 or newer are required.
+Use Python 3.11 and Node.js 22.12+ (22 LTS is used by CI and Docker).
 
 ### 1. Create and activate the Python environment
 
@@ -291,7 +291,7 @@ python -m pip install -r backend\requirements-dev.txt
 ```
 
 `requirements-dev.txt` installs the application plus the test and lint
-tooling. For a runtime-only install, use `requirements.txt` instead.
+tooling, constraining runtime packages to `requirements.lock.txt`.
 
 ### 2. Configure environment variables
 
@@ -314,13 +314,23 @@ POSTGRES_USER=modelops_user
 POSTGRES_PASSWORD=modelops_password
 POSTGRES_DB=modelops_doctor
 POSTGRES_HOST=localhost
-POSTGRES_PORT=5432
-REDIS_URL=redis://localhost:6379/0
-CELERY_BROKER_URL=redis://localhost:6379/0
-CELERY_RESULT_BACKEND=redis://localhost:6379/1
+POSTGRES_PORT=5433
+REDIS_URL=redis://localhost:6380/0
+CELERY_BROKER_URL=redis://localhost:6380/0
+CELERY_RESULT_BACKEND=redis://localhost:6380/1
 ```
 
 Do not commit the real `.env` file.
+
+Start PostgreSQL and Redis from the repository root before migrating:
+
+```powershell
+docker compose up -d --wait db redis
+```
+
+These containers expose PostgreSQL on 5433 and Redis on 6380, matching
+`.env.example`. If you use your own services, change `.env` to their ports
+and credentials. Existing `.env` files are not updated automatically.
 
 ### 3. Apply database migrations
 
@@ -337,17 +347,11 @@ python -m uvicorn app.main:app --reload
 
 ### 5. Start Redis
 
-Create the container once:
+Redis was started with PostgreSQL in step 2. From the repository root,
+verify it is responding:
 
 ```powershell
-docker run -d --name modelops-redis -p 6379:6379 redis:7-alpine
-```
-
-On later runs:
-
-```powershell
-docker start modelops-redis
-docker exec modelops-redis redis-cli ping
+docker compose exec redis redis-cli ping
 ```
 
 ### 6. Start the Celery worker on Windows
@@ -368,7 +372,7 @@ python -m celery -A app.workers.celery_app:celery_app beat --loglevel=info
 
 ```powershell
 cd frontend
-npm install
+npm ci
 npm run dev
 ```
 
@@ -380,7 +384,8 @@ Use the frontend or Swagger UI to complete this sequence:
 
 1. Create `Customer Churn Monitoring` with target column `churn`.
 2. Register `Customer Churn Classifier` version `1.0.0`.
-3. Upload `ml_examples/sample_churn_training.csv` as the training baseline.
+3. Restore the training CSV using the DVC Workflow below, then upload
+   `ml_examples/sample_churn_training.csv` as the training baseline.
 4. Upload `ml_examples/sample_prediction_logs/churn_predictions_v1.csv`.
 5. Run a synchronous model-health check.
 6. Queue a background health check from the Automation Jobs page.
@@ -482,6 +487,10 @@ A model may have a `good` numerical score while still receiving a `high` diagnos
 
 ## MLflow Workflow
 
+MLflow and DVC are optional demo tools, separate from the API's runtime
+dependencies. Install them in a separate environment before running these
+examples. See [the DVC workflow](docs/dvc-workflow.md) for dataset access.
+
 Run model training:
 
 ```powershell
@@ -529,7 +538,11 @@ git add ml_examples\sample_churn_training.csv.dvc
 git commit -m "data: update churn training dataset"
 ```
 
-The included DVC remote is local and intended for demonstration. Configure cloud storage for team or production use.
+The included DVC remote is local and intended for demonstration. Its data
+is not included in a Git clone, so `dvc pull` requires access to an existing
+remote containing the tracked data. See [dataset setup](docs/dvc-workflow.md).
+Configure shared storage for team or production use. The API, frontend,
+and automated tests do not require DVC or the training CSV.
 
 ## Quality Checks
 
@@ -540,6 +553,8 @@ after the Local Development setup above.
 
 ```bash
 cd backend
+python -m pip_audit --strict --no-deps --disable-pip --requirement requirements.lock.txt
+python -m pip install --dry-run --quiet --constraint requirements.lock.txt --requirement requirements.txt
 python -m ruff check app tests alembic/env.py
 python -m ruff format --check app tests alembic/env.py
 python -m pytest
@@ -556,12 +571,21 @@ On Windows, replace `alembic/env.py` with `alembic\env.py`.
 ```bash
 cd frontend
 npm ci
+npm audit --omit=dev --audit-level=high
 npm run lint
+npm run format:check
+npm run typecheck
+npm run test:coverage
 npm run build
 ```
 
 `npm ci` installs the exact versions from `frontend/package-lock.json`.
 Use it instead of `npm install` so the install is reproducible.
+
+`npm test` runs the suite without coverage. `npm run test:coverage` runs
+the suite and fails below 70% on lines, statements, branches, or functions.
+Threshold auto-update is disabled; a shortfall never lowers the gate.
+Coverage reports are generated in `frontend/coverage/`.
 
 ### Docker
 
@@ -580,6 +604,7 @@ Two workflows run on every push and pull request to `main`.
 
 - Starts PostgreSQL and Redis services
 - Installs Python dependencies from `requirements-dev.txt`
+- Constrains runtime dependency resolution to `requirements.lock.txt`
 - Audits `requirements.lock.txt` with pip-audit and fails on any advisory
 - Fails if the lockfile no longer satisfies `requirements.txt`
 - Runs Ruff linting and formatting checks
@@ -593,9 +618,11 @@ anything fails, and tears the stack down.
 `Frontend CI`:
 
 - Installs from `package-lock.json` with `npm ci`
+- Audits runtime dependencies and fails on high/critical advisories
 - Runs ESLint
+- Checks Prettier formatting
 - Type-checks with `tsc -b`
-- Runs Vitest with coverage
+- Runs Vitest with an enforced 70% coverage threshold on all four metrics
 - Builds the production bundle
 
 Dependabot raises grouped weekly updates for pip, npm and GitHub Actions.
