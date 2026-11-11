@@ -1,8 +1,10 @@
 .git/
+.verification/
 .github/
 backend/.venv/
 frontend/node_modules/
 frontend/dist/
+frontend/coverage/
 node_modules/
 __pycache__/
 *.py[cod]
