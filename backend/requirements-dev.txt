@@ -5,6 +5,9 @@
 #
 # Install: python -m pip install -r backend/requirements-dev.txt
 
+# Keep runtime resolution consistent with Docker. This constraint lives here
+# so requirements.txt remains an independent source for regenerating the lock.
+-c requirements.lock.txt
 -r requirements.txt
 
 # Testing
