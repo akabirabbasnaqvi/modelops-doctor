@@ -30,6 +30,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Audit dependencies
+        # No accepted exceptions. High/critical runtime advisories fail CI.
+        run: npm audit --omit=dev --audit-level=high
+
       - name: Run ESLint
         run: npm run lint
 
