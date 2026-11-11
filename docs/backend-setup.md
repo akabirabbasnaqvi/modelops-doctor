@@ -40,7 +40,8 @@ python -m pip install -r backend\requirements-dev.txt
 ```
 
 `requirements.txt` holds the runtime dependencies. `requirements-dev.txt`
-adds pytest, pytest-cov, httpx, and Ruff, and is what CI installs.
+adds pytest, pytest-cov, httpx, Ruff, and pip-audit, and is what CI installs.
+It constrains runtime versions to `requirements.lock.txt`, matching Docker.
 
 ## Configure Environment Variables
 
@@ -50,9 +51,23 @@ Create the local environment file:
 Copy-Item .env.example .env
 ```
 
-Update the PostgreSQL password and other local configuration in `.env`.
+The example uses the local Compose PostgreSQL and Redis ports (5433 and
+6380) and demo credentials. If you use your own services, update `.env`
+to match them. Existing `.env` files are not changed by setup.
 
 Never commit `.env` to Git.
+
+## Start PostgreSQL and Redis
+
+From the repository root, before running migrations:
+
+```powershell
+docker compose up -d --wait db redis
+docker compose exec redis redis-cli ping
+```
+
+The Redis check returns `PONG`. Keep these containers running while using
+the local API, worker, and Beat.
 
 ## Run Database Migrations
 
@@ -83,22 +98,10 @@ http://127.0.0.1:8000/api/v1/health
 
 ## Run Redis Locally
 
-Create the Redis container once:
+Redis was started with PostgreSQL above. From the repository root, check it:
 
 ```powershell
-docker run -d --name modelops-redis -p 6379:6379 redis:7-alpine
-```
-
-If the container already exists, start it:
-
-```powershell
-docker start modelops-redis
-```
-
-Test Redis:
-
-```powershell
-docker exec modelops-redis redis-cli ping
+docker compose exec redis redis-cli ping
 ```
 
 Expected response:
@@ -125,10 +128,24 @@ python -m celery -A app.workers.celery_app:celery_app beat --loglevel=info
 
 ## Run Tests
 
+Tests use fake repositories and temporary files; PostgreSQL and Redis do
+not need to be running for the current unit/API health suite.
+
 ```powershell
 cd backend
 python -m pytest
 ```
+
+## Audit Runtime Dependencies
+
+From `backend/`, run the same gate as CI:
+
+```powershell
+python -m pip_audit --strict --no-deps --disable-pip --requirement requirements.lock.txt
+```
+
+The lock is fully pinned, so pip-audit can check every listed package
+without trying to install Linux-only packages on Windows.
 
 ## Run Ruff
 
