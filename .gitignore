@@ -10,6 +10,7 @@ env/
 backend/.venv/
 
 # Testing and code quality
+.verification/
 .pytest_cache/
 .ruff_cache/
 .coverage
