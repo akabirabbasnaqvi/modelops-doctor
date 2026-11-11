@@ -5,7 +5,7 @@ the code running, what the checks expect, and how changes are shipped.
 
 ## Getting set up
 
-Prerequisites: Python 3.11+, Node.js 20+, Docker (optional, for the full
+Prerequisites: Python 3.11, Node.js 22.12+, Docker (optional, for the full
 stack).
 
 Follow the Local Development section of [README.md](README.md). The short
@@ -17,6 +17,8 @@ python3.11 -m venv backend/.venv
 source backend/.venv/bin/activate        # Windows: backend\.venv\Scripts\Activate.ps1
 python -m pip install -r backend/requirements-dev.txt
 cp .env.example .env                     # Windows: Copy-Item .env.example .env
+# For local API development, start PostgreSQL and Redis before migrations:
+docker compose up -d --wait db redis
 
 # Frontend
 cd frontend
@@ -33,6 +35,8 @@ CI runs exactly these. Run them locally before opening a pull request.
 Backend, from `backend/`:
 
 ```bash
+python -m pip_audit --strict --no-deps --disable-pip --requirement requirements.lock.txt
+python -m pip install --dry-run --quiet --constraint requirements.lock.txt --requirement requirements.txt
 python -m ruff check app tests alembic/env.py
 python -m ruff format --check app tests alembic/env.py
 python -m pytest
@@ -44,15 +48,17 @@ python -m pytest
 Frontend, from `frontend/`:
 
 ```bash
+npm audit --omit=dev --audit-level=high
 npm run lint
 npm run format:check
 npm run typecheck
-npm run test
+npm run test:coverage
 npm run build
 ```
 
-`npm run test` fails below 70% coverage on lines, statements, branches and
-functions. The thresholds live in `frontend/vitest.config.ts`.
+`npm run test:coverage` fails below 70% coverage on lines, statements,
+branches and functions, with threshold auto-update disabled. The thresholds
+live in `frontend/vitest.config.ts`. `npm test` runs tests without coverage.
 
 Run `npm run format` to fix formatting, and `npm run test:watch` while
 working on tests.
