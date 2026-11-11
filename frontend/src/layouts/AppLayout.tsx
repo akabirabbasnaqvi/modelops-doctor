@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useLocation } from "react-router-dom";
 
 import {
   FiActivity,
@@ -11,6 +11,8 @@ import {
   FiServer,
   FiX,
 } from "react-icons/fi";
+
+import ErrorBoundary from "../components/ErrorBoundary";
 
 const navigationItems = [
   {
@@ -53,6 +55,7 @@ const navigationItems = [
 
 export default function AppLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const location = useLocation();
 
   return (
     <div className="app-shell">
@@ -111,7 +114,9 @@ export default function AppLayout() {
       )}
 
       <main className="main-content">
-        <Outlet />
+        <ErrorBoundary resetKey={location.pathname}>
+          <Outlet />
+        </ErrorBoundary>
       </main>
     </div>
   );
