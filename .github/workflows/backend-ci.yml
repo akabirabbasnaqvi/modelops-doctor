@@ -70,6 +70,7 @@ jobs:
           cache-dependency-path: |
             backend/requirements.txt
             backend/requirements-dev.txt
+            backend/requirements.lock.txt
 
       - name: Install dependencies
         run: |
@@ -77,8 +78,10 @@ jobs:
           python -m pip install -r requirements-dev.txt
 
       - name: Audit dependencies for known vulnerabilities
+        # The complete lock is already pinned; audit it without attempting
+        # platform-specific installs (for example uvloop on Windows).
         run: |
-          python -m pip_audit --strict --no-deps \
+          python -m pip_audit --strict --no-deps --disable-pip \
             --requirement requirements.lock.txt
 
       - name: Verify the lockfile still satisfies requirements.txt
